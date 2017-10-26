@@ -14,10 +14,10 @@ class GUI(Tk):
         self.title("Experiment")
         self.config(bg = "white")
         #self.attributes("-fullscreen", True) # for testing
-        #self.attributes("-topmost", True) # for testing
-        #self.overrideredirect(True) # for testing
+        self.attributes("-topmost", True) # for testing
+        self.overrideredirect(True) # for testing
         self.protocol("WM_DELETE_WINDOW", lambda: self.closeFun())
-        #self.geometry("1680x1050") # for testing
+        self.geometry("1680x1050") # for testing
 
         self.screenwidth = 1680 # adjust
         self.screenheight = 1050 # adjust

@@ -3,6 +3,7 @@ from tkinter import ttk
 from time import time
 
 import os
+import sys
 
 
 class ExperimentFrame(Canvas):
@@ -196,7 +197,7 @@ class Question(Canvas):
 class Measure(Canvas):
     def __init__(self, root, text, values, left, right, shortText = "", function = None,
                  questionPosition = "next", labelPosition = "above", middle = "",
-                 funconce = False):
+                 funconce = False, filler = 0):
         super().__init__(root)
 
         self.root = root
@@ -244,7 +245,12 @@ class Measure(Canvas):
             padx = 4 if not middle else 18
             ttk.Radiobutton(self.scale, text = str(value), value = value, command = self.func,
                             variable = self.answer).grid(row = 0, column = col, padx = padx)
-
+            self.scale.columnconfigure(col, weight = 1)
+        if filler:
+            self.filler = Canvas(self.scale, background = "white", width = filler, height = 1,
+                                 highlightbackground = "white", highlightcolor = "white")
+            self.filler.grid(column = 0, row = 1, columnspan = len(values), sticky = EW)
+            
         self.columnconfigure(0, weight = 1)
         self.columnconfigure(3, weight = 1)
 
@@ -265,3 +271,12 @@ class Measure(Canvas):
         else:
             ans = self.answer.get()
         self.root.file.write(ans)
+
+
+
+def read_all(file):
+    text = ""
+    with open(os.path.join(os.path.dirname(__file__), file)) as f:
+        for line in f:
+            text += line
+    return text

@@ -1,6 +1,5 @@
 #! python3
 
-
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
@@ -10,43 +9,59 @@ import random
 import os.path
 import os
 
-from common import ExperimentFrame, InstructionsFrame
+from common import ExperimentFrame, InstructionsFrame, read_all, Measure
 from gui import GUI
 
+fintro = read_all("choice_blindness_intro1.txt")
+sintro = read_all("choice_blindness_intro2.txt")
+tintro = read_all("choice_blindness_intro3.txt")
 
-
-sintro = """Nyní následuje druhá část studie.
-
-Budeme Vám znovu prezentovat všechny popisy z předchozí části. Uvidíte také, zda jste popsané chování hodnotili jako morálně špatné nebo nikoliv.
-Vaším úkolem bude označit, zda bylo Vaše hodnocení založeno na intuici nebo naopak spíše na rozumové úvaze.
-
-Svou volbu můžete upravovat, ale jakmile kliknete na tlačítko Pokračovat, přesunete se na novou obrazovku s popisem následujícího chování.
-
-(Pokud budete chtít po druhém přečtení své hodnocení popsaného chování změnit, můžete tak učinit zaškrtnutím příslušného políčka.)
-"""
-
-tintro = """\n\n\n
-Nyní se Vás ještě zeptáme na několik otázek týkajících se průběhu studie a požádáme Vás o uvedení demografických údajů.
-"""
+ChoiceBlindnessInstructions1 = (InstructionsFrame, {"text": fintro, "height": 8})
+ChoiceBlindnessInstructions2 = (InstructionsFrame, {"text": sintro, "height": 8})
+ChoiceBlindnessInstructions3 = (InstructionsFrame, {"text": tintro, "height": 8})
 
 
 
-delibtext = "Označte na škále, nakolik bylo Vaše původní hodnocení chování intuitivní nebo racionální."
-changetext = "Pokud chcete po druhém přečtení popisu chování změnit své původní hodnocení, zaškrtněte toto políčko:"
+##################################################################################################################
+# TEXTS #
+#########
 
+changetext = "Pokud chcete, můžete své hodnocení ještě změnit. Změnu provedete zakliknutím odpovědi, kterou chcete vybrat."
 
+beh_answers = ["Nikdy", "Zřídka", "Občas", "Často", "Velmi často", "Vždy"]
+eval_answers = ["Velmi špatná", "Celkem špatná", "Spíše špatná", "Spíše dobrá", "Celkem dobrá", "Velmi dobrá"]
+
+beh_question = "Jak často tuto aktivitu provádíte?"
+eval_question = "Jak tuto aktivitu celkově hodnotíte?"
+
+beh_question2 = "Myslíte si, že tuto aktivitu provádíte častěji, než většina lidí v našem vzorku?"
+eval_question2 = "Myslíte si, že tuto aktivitu hodnotíte pozitivněji, než většina lidí v našem vzorku?"
+
+beh_statement = "Tuto aktivitu provádíte:"
+eval_statement = "Tuto aktivitu hodnotíte:"
+
+blindnessQuestion = """
+Při druhém zobrazení situací Vám byla zobrazena Vaše původní odpověď na otázku, zda je popsané chování morálně špatné. Ve skutečnosti 5 z 40 těchto odpovědí bylo obráceno. Tj. pokud jste například původně odpověděli Ano, bylo Vám napsáno, že jste odpověděli Ne. Všiml(a) jste si této záměny?
+""" # potreba upravit
+
+##################################################################################################################
+# SETTINGS #
+############
 
 n_items = 8
-n_manipulated = 2
+n_manipulated = 3
+
+##################################################################################################################
+
 
 
 behavioral = []
-with open("behavioral.txt") as f:
+with open(os.path.join(os.path.dirname(__file__),"behavioral.txt")) as f:
     for line in f:
         behavioral.append(line.strip())
 
 evaluative = []
-with open("evaluative.txt") as f:
+with open(os.path.join(os.path.dirname(__file__),"evaluative.txt")) as f:
     for line in f:
         evaluative.append(line.strip())
 
@@ -59,16 +74,12 @@ random.shuffle(manipulated)
 trials = [i for i in zip(items, eval_behav, manipulated)]
 
 
-        
-
-
-
 
 class Situations(ExperimentFrame):
     def __init__(self, root):
         super().__init__(root)
 
-        self.nchar = 75
+        self.nchar = 55
         self.count = 0
         self.root = root
         ttk.Style().configure("TButton", font = "helvetica 15")
@@ -80,24 +91,27 @@ class Situations(ExperimentFrame):
                              highlightbackground = "white", highlightcolor = "white")
         self.upfiller.grid(row = 0, column = 1, rowspan = 2)
         
-        self.text = Text(self, font = "helvetica 20", relief = "flat", background = "white",
-                         width = self.nchar - 8, height = 5, cursor = "arrow",
+        self.text = Text(self, font = "helvetica 22", relief = "flat", background = "white",
+                         width = self.nchar - 8, height = 4, cursor = "arrow",
                          selectbackground = "white", selectforeground = "black")
         self.text.grid(row = 1, column = 0, padx = 2, sticky = S)
 
         self.questions = Canvas(self, background = "white", width = 40, height = 300,
                                 highlightbackground = "white", highlightcolor = "white")
-        self.questions.grid(row = 2, column = 0)
+        self.questions.grid(row = 2, column = 0, sticky = N)
         self.filler = Canvas(self.questions, background = "white", width = 1, height = 250,
                              highlightbackground = "white", highlightcolor = "white")
-        self.filler.grid(column = 2, row = 1, rowspan = 4)
+        self.filler.grid(column = 2, row = 0, rowspan = 4)
+
+        self.downfiller = Canvas(self, background = "white", width = 1, height = 150,
+                                 highlightbackground = "white", highlightcolor = "white")
+        self.downfiller.grid(column = 2, row = 3, rowspan = 1)
 
         self.columnconfigure(0, weight = 1)
         self.rowconfigure(0, weight = 4)
-        self.rowconfigure(1, weight = 2)
-        self.rowconfigure(2, weight = 2)
-        self.rowconfigure(3, weight = 1)
-
+        self.rowconfigure(1, weight = 1)
+        self.rowconfigure(2, weight = 1)
+        self.rowconfigure(3, weight = 2)
 
     def initializeText(self):
         self.content = []
@@ -121,7 +135,6 @@ class Situations(ExperimentFrame):
 
         self.content = [" ".join(line) for line in self.content]
         
-
     def run(self):
         self.config(cursor = "none")
         self.text.config(state = "normal")
@@ -156,39 +169,26 @@ class Situations(ExperimentFrame):
         self.displayWidgets()
         self.t0 = time()
 
-
     def displayWidgets(self):
         self.text.config(state = "disabled")
         self.displayQuestions()
-
 
     def proceed(self, answer):
         rt = str(time() - self.t0)
         if type(self) is First:
             self.root.answers[self.trialText] = answer
-        self.file.write(self.trialText + "\t" + answer + "\t" + rt + "\n")
+        self.file.write(str(self.count + 1) + "\t" + self.trialText + "\t" + str(trials[self.count][0]) + "\t" +
+                        trials[self.count][1] + "\t" + answer.replace(" ", "_") + "\t" + rt + "\n")
         self.count += 1
         if self.count == n_items:
             self.nextFun()
             return
-        self.erase()
 
-        self.displayAnswer()
+        self.erase()
         self.run()
 
-
     def erase(self):
-        if type(self) is Second:
-            for child in self.questions.winfo_children():
-                child.grid_remove()
-                self.filler.grid(column = 2, row = 0, rowspan = 4)
-            for child in self.up.winfo_children():
-                child.grid_remove()
-                self.upfiller.grid(row = 0, column = 1, rowspan = 2)
-        else:
-            self.yes["state"] = "disabled"
-            self.no["state"] = "disabled"
-
+        self.eraseWidgets()
         self.config(cursor = "none")
         self.text.config(state = "normal")
         self.initializeText()
@@ -204,128 +204,80 @@ class First(Situations):
         super().__init__(root)
 
         self.root.answers = {}
-        ttk.Style().configure("TButton", font = "helvetica 15")
-
-        qtext = "Je dle Vás popsané chování morálně špatné?"
-        self.question = ttk.Label(self.questions, text = qtext, background = "white",
-                                  font = "helvetica 17")
-        self.question.grid(row = 0, column = 0, columnspan = 2, pady = 15)
-
-        self.yes = ttk.Button(self.questions, text = "Ano", command = lambda: self.proceed("yes"))
-        self.yes.grid(row = 1, column = 0)
-   
-        self.no = ttk.Button(self.questions, text = "Ne", command = lambda: self.proceed("no"))
-        self.no.grid(row = 1, column = 1)
-
-        self.yes["state"] = "disabled"
-        self.no["state"] = "disabled"
-
+        self.file.write("Choice blindness\n")
+ 
     def displayQuestions(self):
-        self.yes["state"] = "!disabled"
-        self.no["state"] = "!disabled"
+        qtext = beh_question if trials[self.count][1] == "B" else eval_question
+        answers = beh_answers if trials[self.count][1] == "B" else eval_answers
+        self.measure = Measure(self.questions, qtext, answers, "", "", function = self.answered,
+                               questionPosition = "above")
+        self.measure.question["font"] = "helvetica 16"
+        self.measure.grid(row = 2, column = 0)
+
+    def answered(self):
+        self.proceed(self.measure.answer.get())
+
+    def eraseWidgets(self):
+        self.measure.grid_remove()
+
         
-    def displayAnswer(self):
-        pass
-
-
-
-
-
-        
+       
 class Second(Situations):
     def __init__(self, root):
         super().__init__(root)
 
         self.questions.root = self
-        ttk.Style().configure("TCheckbutton", font = "helvetica 15", background = "white")
-
-        self.group = random.choice(["present", "absent"])
-        self.file.write("group\t{}\n\n".format(self.group))
-
-        if self.group == "present":
-            self.displayAnswer()
+        self.file.write("Choice blindness second part\n")
+        self.filler["height"] = 400
 
     def displayQuestions(self):
-        self.changeVar = StringVar()
-        self.changeVar.set("0")
+        self.label = ttk.Label(self.questions, text = changetext, background = "white", font = "helvetica 14")
+        self.label.grid(row = 1, column = 0, sticky = S)
         
-        if self.group == "absent":
-            self.displayAnswer()
+        qtext = beh_statement if trials[self.count][1] == "B" else eval_statement
+        answers = beh_answers if trials[self.count][1] == "B" else eval_answers
+        self.measure = Measure(self.questions, qtext, answers, "", "", function = self.fakeFunction,
+                               questionPosition = "above")
+        self.measure.question["font"] = "helvetica 16"
+        self.measure.grid(row = 2, column = 0)
+        index = answers.index(self.root.answers[self.trialText])
+        if trials[self.count][2] == "M":
+            index = index - 3 if index > 2 else index + 3
+        self.shownAnswer = answers[index]
+        self.measure.answer.set(self.shownAnswer)
 
-        self.changeText = ttk.Label(self.questions, text = changetext)
-        self.changeText.grid(row = 1, column = 0, pady = 30)
-        
-        self.change = ttk.Checkbutton(self.questions, variable = self.changeVar, text = "")
-        self.change.grid(row = 1, column = 1, padx = 5)
+        qtext2 = beh_question2 if trials[self.count][1] == "B" else eval_question2
+        self.measure2 = Measure(self.questions, qtext2, ["Ano", "Ne"], "", "", function = self.rated,
+                                questionPosition = "above", filler = 400)
+        self.measure2.question["font"] = "helvetica 16"
+        self.measure2.grid(row = 3, column = 0, sticky = S)
 
-        self.slider = SliderFrame(self.questions, delibtext)
-        self.slider.grid(row = 2, column = 0, columnspan = 2)
-
-        self.next = ttk.Button(self.questions, text = "Pokračovat", command = self.proc)
+        self.next = ttk.Button(self, text = "Pokračovat", command = self.proc)
         self.next.grid(row = 3, column = 0, pady = 30, columnspan = 2)
         self.next["state"] = "disabled"
+
+    def fakeFunction(self):
+        pass
 
     def rated(self):
         self.next["state"] = "!disabled"
 
     def proc(self):
-        man = "M" if situations[self.count][0] in manipulated else "o"
-        ans = "{}\t{}\t{}".format(man, self.changeVar.get(), self.slider.slider.var.get())
+        ans = "{}\t{}\t{}\t{}".format(trials[self.count][2], self.measure.answer.get(),
+                                      self.measure2.answer.get(), self.measure.answer.get() == self.shownAnswer)
         self.proceed(ans)
 
-    def displayAnswer(self):
-        prevtext = "Bylo podle Vás popsané chování morálně špatné:"
-        ans = self.root.answers[situations[self.count][0]] == "yes" # comment out for testing
-        #ans = True # for testing
-        ans = not ans if situations[self.count][0] in manipulated else ans
-        answer = "ANO" if ans else "NE"
-        self.previous = ttk.Label(self.up, text = prevtext, background = "white",
-                                  font = "helvetica 17")
-        self.previous.grid(row = 0, column = 0, sticky = S, columnspan = 2)
-        self.prevans = ttk.Label(self.up, text = answer, background = "white",
-                                  font = "helvetica 20 bold")
-        self.prevans.grid(row = 1, column = 0, sticky = S, columnspan = 2, pady = 5)        
-
-        self.update()
-        sleep(1)
-
-
-class SliderFrame(Canvas):
-    def __init__(self, root, text):
-        super().__init__(root)
-        
-        self.root = root 
-        self["background"] = "white"
-        self["highlightbackground"] = "white"
-        self["highlightcolor"] = "white"
-
-        ttk.Style().configure("TLabel", background = "white", font = "helvetica 15")
-
-        self.low = ttk.Label(self, text = "intuitivní", width = 10, anchor = "e")
-        self.high = ttk.Label(self, text = "racionální", width = 10, anchor = "w")
-        self.text = ttk.Label(self, text = text, width = 81, anchor = "center")
-        
-        self.slider = Slider(self)
-        
-        self.text.grid(column = 1, row = 0, pady = 5, columnspan = 3)
-        self.low.grid(column = 1, row = 1)
-        self.slider.grid(column = 2, row = 1, padx = 10)
-        self.high.grid(column = 3, row = 1)
+    def eraseWidgets(self):
+        for child in self.questions.winfo_children():
+            child.grid_remove()
+            self.filler.grid(column = 2, row = 0, rowspan = 4)
+        for child in self.up.winfo_children():
+            child.grid_remove()
+            self.upfiller.grid(row = 0, column = 1, rowspan = 2)
 
 
 
-class Slider(ttk.Scale):
-    def __init__(self, root):
-        self.var = StringVar()
-        self.var.set("50")
-        ttk.Style().configure("TScale", background = "white")
-        super().__init__(root, orient = HORIZONTAL, from_ = 0, to = 100, variable = self.var,
-                         command = self.move, length = 600)
-        self.root = root
-        
-    def move(self, _):
-        self.root.root.root.rated()
-        
+       
 
 
 
@@ -379,7 +331,7 @@ class DebriefingOne(ExperimentFrame):
         pass
 
 
-        
+       
 class Question(Canvas):
     def __init__(self, root, text, conditional = None, condtype = None, condtext = "", width = 80,
                  label = True, answer = "yesno", condition = "yes"):
@@ -483,10 +435,7 @@ class DebriefingTwo(ExperimentFrame):
 
         q1 = 'Víte, co značí termín "choice blindness" neboli "slepota k volbě"?'
         q1a = "Stručně prosím význam popište."
-        q2 = ("Při druhém zobrazení situací Vám byla zobrazena Vaše původní odpověď "
-              "na otázku, zda je popsané chování morálně špatné. Ve skutečnosti 5 z 40 těchto "
-              "odpovědí bylo obráceno. Tj. pokud jste například původně odpověděli Ano, bylo Vám "
-              "napsáno, že jste odpověděli Ne. Všiml(a) jste si této záměny?")
+        q2 = blindnessQuestion
         q3 = "Znal(a) jste design/cíl této studie? (např. protože Vám o něm řekli předchozí účastníci)"
              
         self.question1 = Question(self, q1, (ttk.Entry, {"width": 100}), width = 90,
@@ -557,18 +506,20 @@ class DebriefingTwo(ExperimentFrame):
 
       
 
-
+ChoiceBlindness1 = First
+ChoiceBlindness2 = Second
 
 
 
 def main():
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([First#,
-         #(InstructionsFrame, {"text": sintro}),
-         #Second,
-         #(InstructionsFrame, {"text": tintro}),
-         #DebriefingOne,
-         #DebriefingTwo
+    GUI([ChoiceBlindnessInstructions1,
+         ChoiceBlindness1,
+         ChoiceBlindnessInstructions2,
+         ChoiceBlindness2,
+         ChoiceBlindnessInstructions3,
+         DebriefingOne,
+         DebriefingTwo
          ])
 
 
