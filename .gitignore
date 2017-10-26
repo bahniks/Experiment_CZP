@@ -1,6 +1,6 @@
 *.docx
-Data/
-
+Data/*.txt
+!Data/file.txt
 
 
 # Byte-compiled / optimized / DLL files
