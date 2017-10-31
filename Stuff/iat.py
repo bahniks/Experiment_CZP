@@ -47,6 +47,8 @@ files = os.listdir(os.path.join(os.path.dirname(__file__), "IAT"))
 n_items = int(len(files)/2)
 good_words = good_words[:n_items]
 bad_words = bad_words[:n_items]
+categoryOneItems = [file for file in files if categories[0] in file]
+categoryTwoItems = [file for file in files if categories[1] in file]
 
 
 ##behavioral = []
@@ -96,17 +98,41 @@ class Introduction(ExperimentFrame):
         labelFrames = []
         labels = []
         labelsTexts = ["Kategorie"] + categoriesNames
+        categoriesFrames = []
+        categoriesContent = []
+        categoriesTexts = ["Položky", ", ".join(good_words), ", ".join(bad_words),
+                           categoryOneItems, categoryTwoItems]
+        self.images = []
         for row in range(0, 5):
+            # left column
             labelFrames.append(ttk.Frame(self.categories))
-            labelFrames[row].grid(row = row, column = 0, sticky = EW)
+            labelFrames[row].grid(row = row, column = 0, sticky = "NSEW")
             labelFrames[row].columnconfigure(0, weight = 1)
+            labelFrames[row].rowconfigure(0, weight = 1)
             bckg = "grey90" if row == 0 else "white"
             labels.append(ttk.Label(labelFrames[row], text = labelsTexts[row], font = "Helvetica 15",
                                     background = bckg))
-            labels[row].grid(row = row, column = 0, sticky = EW, padx = 2, pady = 1)
-
-    def write(self):
-        pass
+            labels[row].grid(row = 0, column = 0, sticky = "NSEW", padx = 2, pady = 1)
+            # right column
+            categoriesFrames.append(ttk.Frame(self.categories))
+            categoriesFrames[row].grid(row = row, column = 1, sticky = EW)
+            categoriesFrames[row].columnconfigure(0, weight = 1)
+            if type(categoriesTexts[row]) == list:
+                content = Canvas(categoriesFrames[row], background = bckg, width = 250, height = 200)
+                pictures = []
+                for col, file in enumerate(categoriesTexts[row]):
+                    img = PhotoImage(file = os.path.join(os.path.dirname(__file__), "IAT", file))
+                    img = img.subsample(4)
+                    self.images.append(img)
+                    pictures.append(ttk.Label(content))
+                    pictures[col]["image"] = img
+                    pictures[col].grid(row = 0, column = col)
+            else:
+                content = ttk.Label(categoriesFrames[row], text = categoriesTexts[row], font = "Helvetica 15",
+                                    background = bckg)
+            categoriesContent.append(content)
+            categoriesContent[row].grid(row = 0, column = 0, sticky = NSEW)
+            
 
 
 
