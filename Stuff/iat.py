@@ -3,7 +3,8 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-from time import time, localtime, strftime, sleep
+from time import time, localtime, strftime, sleep,  perf_counter
+from itertools import chain
 
 import random
 import os.path
@@ -11,11 +12,6 @@ import os
 
 from common import ExperimentFrame, InstructionsFrame, read_all, Measure
 from gui import GUI
-
-#fintro = read_all("iat_intro1.txt")
-
-#IatInstructions1 = (InstructionsFrame, {"text": fintro, "height": 8})
-
 
 
 
@@ -25,20 +21,56 @@ from gui import GUI
 
 introtext = """Vaším úkolem bude používat klávesy 'E' a 'I' pro co nejrychlejší kategorizaci položek do skupin.
 Toto jsou zmiňované čtyři skupiny a položky, které do nich patří:"""
-introtext2 = "Úloha má sedm částí. Dávejte pozor! Instrukce se liší u každé části." 
+introtext2 = "Úloha má sedm částí. Dávejte pozor! Instrukce se liší u každé části."
+
+introTextIAT1 = """
+Použivejte prst levé ruky na klávese E pro položky, které náleží do kategorie {}.
+Použivejte prst pravé ruky na klávese I pro položky, které náleží do kategorie {}.
+{}
+Pokud uděláte chybu, objeví se červené X. Zmáčkněte pak druhé tlačítko pro pokračování.
+Pracujte přesně a co nejrychleji.
+"""
+
+byone = "Položky se budou objevovat po jedné.\n"
+
+introTextIAT2 = """{}
+Používejte klávesu E pro {} a {}.
+Používejte klávesu I pro {} a {}.
+Každá položka náleží pouze do jedné kategorie.
+{}
+Pracujte přesně a co nejrychleji.
+"""
+
+mistake = "\nPokud uděláte chybu, objeví se červené X. Zmáčkněte pak druhé tlačítko pro pokračování."
+same = "\nTato část je stejná jako předchozí."
+
+introTextIAT3 = """
+{}
+Použivejte prst levé ruky na klávese E pro kategorii {}.
+Použivejte prst pravé ruky na klávese I pro kategorii {}.
+
+Pracujte přesně a co nejrychleji.
+"""
+
+positionchange = "Dávejte pozor, kategorie změnili pozice!"
+
+##################################################################################################################
+# CATEGORIES #
+##############
 
 good_words = ["Atraktivní", "Láska", "Radostný", "Smích", "Usměvavý", "Přítel", "Milý", "Nadšený"]
 bad_words = ["Prohnilý", "Nenávist", "Ponížit", "Strašlivý", "Sobecký", "Negativní", "Otravný", "Katastrofa"]
 
-categoriesNames = ["Dobrý", "Špatný", "Světlý", "Tmavý"]
-
-
+categoriesNames = ["Dobrý", "Špatný", "Světlé kočky", "Tmavé kočky"]
 
 ##################################################################################################################
 # SETTINGS #
 ############
 
+# format of names of picture files, e.g. ["s", "T"] corresponds to files named: s1.gif, s2.gif ..., T1.gif ...
 categories = ["s", "t"]
+
+itemsInRound = [20, 20, 20, 40, 40, 20, 40]
 
 ##################################################################################################################
 
@@ -49,25 +81,28 @@ good_words = good_words[:n_items]
 bad_words = bad_words[:n_items]
 categoryOneItems = [file for file in files if categories[0] in file]
 categoryTwoItems = [file for file in files if categories[1] in file]
+imageType = categoryOneItems[0][-4:]
 
+positions = random.sample([2,3], 2)
+rounds = ((positions[0], positions[1]), (1,0), [[positions[0], 1], [positions[1], 0]],
+          [[positions[0], 1], [positions[1], 0]], (positions[1], positions[0]),
+          [[positions[1], 1], [positions[0], 0]], [[positions[1], 1], [positions[0], 0]])
 
-##behavioral = []
-##with open(os.path.join(os.path.dirname(__file__),"behavioral.txt")) as f:
-##    for line in f:
-##        behavioral.append(line.strip())
-##
-##evaluative = []
-##with open(os.path.join(os.path.dirname(__file__),"evaluative.txt")) as f:
-##    for line in f:
-##        evaluative.append(line.strip())
-##
-##items = random.sample([i for i in range(len(behavioral))], n_items)
-##eval_behav = ["E"]*int(n_items/2) + ["B"]*int(n_items/2)
-##random.shuffle(eval_behav)
-##manipulated = ["M"]*(n_manipulated) + ["n"]*(n_items-n_manipulated)
-##random.shuffle(manipulated)
-##
-##trials = [i for i in zip(items, eval_behav, manipulated)]
+introTexts = [introTextIAT1.format(categoriesNames[rounds[0][0]], categoriesNames[rounds[0][1]], byone),
+              introTextIAT1.format(categoriesNames[rounds[1][0]], categoriesNames[rounds[1][1]], ""),
+              introTextIAT2.format("", categoriesNames[rounds[2][0][0]], categoriesNames[rounds[2][0][1]],
+                                   categoriesNames[rounds[2][1][0]], categoriesNames[rounds[2][1][1]], mistake),
+              introTextIAT2.format(same, categoriesNames[rounds[3][0][0]], categoriesNames[rounds[3][0][1]],
+                                   categoriesNames[rounds[3][1][0]], categoriesNames[rounds[3][1][1]], ""),
+              introTextIAT3.format(positionchange, categoriesNames[rounds[4][0]],
+                                   categoriesNames[rounds[4][1]]),
+              introTextIAT2.format("", categoriesNames[rounds[5][0][0]], categoriesNames[rounds[5][0][1]],
+                                   categoriesNames[rounds[5][1][0]], categoriesNames[rounds[5][1][1]], mistake),
+              introTextIAT2.format(same, categoriesNames[rounds[6][0][0]], categoriesNames[rounds[6][0][1]],
+                                   categoriesNames[rounds[6][1][0]], categoriesNames[rounds[6][1][1]], "")
+              ]
+
+allItems = [good_words, bad_words, categoryOneItems, categoryTwoItems]
 
 
 
@@ -110,7 +145,7 @@ class Introduction(ExperimentFrame):
             labelFrames[row].columnconfigure(0, weight = 1)
             labelFrames[row].rowconfigure(0, weight = 1)
             bckg = "grey90" if row == 0 else "white"
-            labels.append(ttk.Label(labelFrames[row], text = labelsTexts[row], font = "Helvetica 15",
+            labels.append(ttk.Label(labelFrames[row], text = labelsTexts[row] + " "*5, font = "Helvetica 15",
                                     background = bckg))
             labels[row].grid(row = 0, column = 0, sticky = "NSEW", padx = 2, pady = 1)
             # right column
@@ -118,7 +153,7 @@ class Introduction(ExperimentFrame):
             categoriesFrames[row].grid(row = row, column = 1, sticky = EW)
             categoriesFrames[row].columnconfigure(0, weight = 1)
             if type(categoriesTexts[row]) == list:
-                content = Canvas(categoriesFrames[row], background = bckg, width = 250, height = 200)
+                content = Canvas(categoriesFrames[row], background = bckg)
                 pictures = []
                 for col, file in enumerate(categoriesTexts[row]):
                     img = PhotoImage(file = os.path.join(os.path.dirname(__file__), "IAT", file))
@@ -131,14 +166,247 @@ class Introduction(ExperimentFrame):
                 content = ttk.Label(categoriesFrames[row], text = categoriesTexts[row], font = "Helvetica 15",
                                     background = bckg)
             categoriesContent.append(content)
-            categoriesContent[row].grid(row = 0, column = 0, sticky = NSEW)
-            
+            categoriesContent[row].grid(row = 0, column = 0, sticky = NSEW, padx = 1, pady = 1)
 
+
+
+class CommonFrame(ExperimentFrame):
+    def __init__(self, root):
+        super().__init__(root)
+
+        self.indices = rounds[self.root.IATround]
+        if type(self.indices) == list:
+            self.labelLeft = categoriesNames[rounds[self.root.IATround][0][1]]
+            self.labelRight = categoriesNames[rounds[self.root.IATround][1][1]]
+            self.labelLeft2 = categoriesNames[rounds[self.root.IATround][0][0]]
+            self.labelRight2 = categoriesNames[rounds[self.root.IATround][1][0]]
+            self.categoryLeft2 = ttk.Label(self, text = self.labelLeft2, font = "helvetica 22",
+                                          background = "white", foreground = "green")
+            self.categoryLeft2.grid(row = 4, column = 1, sticky = "N")        
+            self.categoryRight2 = ttk.Label(self, text = self.labelRight2, font = "helvetica 22",
+                                          background = "white", foreground = "green")
+            self.categoryRight2.grid(row = 4, column = 3, sticky= "N")
+            self.orLeft = ttk.Label(self, text = "nebo", font = "helvetica 18", background = "white")
+            self.orLeft.grid(row = 3, column = 1, pady = 5)        
+            self.orRight = ttk.Label(self, text = "nebo", font = "helvetica 18", background = "white")
+            self.orRight.grid(row = 3, column = 3, pady = 5)
+        else:
+            self.labelLeft = categoriesNames[rounds[self.root.IATround][0]]
+            self.labelRight = categoriesNames[rounds[self.root.IATround][1]]
+        self.color = "green" if self.labelLeft in categoriesNames[2:4] else "blue"
+        self.categoryLeft = ttk.Label(self, text = self.labelLeft, font = "helvetica 22",
+                                      background = "white", foreground = self.color)
+        self.categoryLeft.grid(row = 2, column = 1)        
+        self.categoryRight = ttk.Label(self, text = self.labelRight, font = "helvetica 22",
+                                      background = "white", foreground = self.color)
+        self.categoryRight.grid(row = 2, column = 3)
+
+        self.textLeft = ttk.Label(self, text = 'Zmáčkněte "E" pro' , font = "courier 11", background = "white")
+        self.textLeft.grid(row = 1, column = 1, pady = 5)        
+        self.textRight = ttk.Label(self, text = 'Zmáčkněte "I" pro' , font = "courier 11", background = "white")
+        self.textRight.grid(row = 1, column = 3, pady = 5)
+
+        self.mainText = Text(self, width = 75, height = 10, relief = "flat", background = "white",
+                     highlightbackground = "white", font = "helvetica 20", wrap = "word")
+        self.finishText()
+        x_index = self.mainText.search("X", "1.0")
+        if x_index:
+            self.mainText.tag_add("red", x_index, x_index + "+1c")
+            self.mainText.tag_configure("red", font = "helvetica 20 bold", foreground = "red")    
+        self.mainText.config(state = "disabled")
+        self.mainText.grid(row = 6, column = 1, columnspan = 3)
+
+        self.finishInitialization()
+        
+
+
+class Instructions(CommonFrame):
+    def __init__(self, root):
+        self.root = root
+        if hasattr(self.root, "IATround"):
+            self.root.IATround += 1
+        else:
+            self.root.IATround = 0
+        super().__init__(root)
+
+    def finishInitialization(self):
+        self.partText = ttk.Label(self, text = "Část {} z 7".format(self.root.IATround + 1), background = "white",
+                                  font = "helvetica 20 underline")
+        self.partText.grid(row = 5, column = 2)
+
+        self.spaceBarText = Text(self, width = 60, height = 1, relief = "flat", background = "white",
+                                 highlightbackground = "white", font = "helvetica 20")
+        self.spaceBarText.insert("1.0", "Zmáčkněte ")
+        self.spaceBarText.insert("end", "mezerník", "bold")
+        self.spaceBarText.insert("end", " jakmile budete připraveni začít.")
+        self.spaceBarText.tag_configure("bold", font = "helvetica 20 bold")
+        self.spaceBarText.tag_add("center", "1.0", "end")
+        self.spaceBarText.tag_configure("center", justify = 'center')
+        self.spaceBarText.config(state = "disabled")
+        self.spaceBarText.grid(row = 7, column = 1, columnspan = 3)
+        
+        self.columnconfigure(0, weight = 1)
+        self.columnconfigure(2, weight = 1)
+        self.columnconfigure(4, weight = 1)
+        self.rowconfigure(0, weight = 3)
+        self.rowconfigure(4, weight = 1)
+        self.rowconfigure(6, weight = 1)
+        self.rowconfigure(8, weight = 3)
+
+        self.root.bind("<space>", lambda e: self.nextFun())
+
+
+    def finishText(self):
+        self.mainText.insert("1.0", introTexts[self.root.IATround])
+        category1_index = self.mainText.search(self.labelLeft, "1.0")
+        self.mainText.tag_add("self.colored", category1_index,
+                              category1_index + "+{}c".format(len(self.labelLeft)))
+        category2_index = self.mainText.search(self.labelRight, "1.0")
+        self.mainText.tag_add("self.colored", category2_index,
+                              category2_index + "+{}c".format(len(self.labelRight)))
+        self.mainText.tag_configure("self.colored", foreground = self.color)
+        if type(self.indices) == list:
+            category3_index = self.mainText.search(self.labelLeft2, "1.0")
+            self.mainText.tag_add("green", category3_index,
+                                  category3_index + "+{}c".format(len(self.labelLeft2)))
+            category4_index = self.mainText.search(self.labelRight2, "1.0")
+            self.mainText.tag_add("green", category4_index,
+                                  category4_index + "+{}c".format(len(self.labelRight2)))
+            self.mainText.tag_configure("green", foreground = "green")  
+        e_index = self.mainText.search("E", "1.0")
+        i_index = self.mainText.search("I", "1.0")
+        self.mainText.tag_add("bold", e_index, e_index + "+1c")
+        self.mainText.tag_add("bold", i_index, i_index + "+1c")
+        change_index = self.mainText.search(positionchange, "1.0")
+        if change_index:
+            self.mainText.tag_add("bold", change_index, change_index + "+{}c".format(len(positionchange)))
+        self.mainText.tag_configure("bold", font = "helvetica 20 bold")
+        fastText = "co nejrychleji"
+        fast_index = self.mainText.search(fastText, "1.0")
+        self.mainText.tag_add("underline", fast_index, fast_index + "+{}c".format(len(fastText)))
+        self.mainText.tag_configure("underline", font = "helvetica 20 underline")
+
+
+    def nextFun(self):
+        self.root.unbind("<space>")
+        super().nextFun()
+
+
+    
+class IAT(CommonFrame):
+    def __init__(self, root):
+        self.root = root #
+        if hasattr(self.root, "IATround"): #
+            self.root.IATround += 1 #
+        else: #
+            self.root.IATround = 0 #
+        super().__init__(root)
+
+    def finishInitialization(self):
+        self.textVar = StringVar()
+        self.itemLab = ttk.Label(self, textvariable = self.textVar, font = "helvetica 40", background = "white")
+        self.itemLab.grid(row = 4, column = 2)
+
+        self.mainText.tag_configure("red", font = "helvetica 15 bold") 
+
+        self.filler = Canvas(self, background = "white", width = 1, height = 250,
+                             highlightbackground = "white", highlightcolor = "white")
+        self.filler.grid(row = 4, column = 0)
+        
+        self.columnconfigure(0, weight = 1)
+        self.columnconfigure(2, weight = 1)
+        self.columnconfigure(4, weight = 1)
+        self.rowconfigure(0, weight = 3)
+        self.rowconfigure(4, weight = 3)
+        self.rowconfigure(8, weight = 3)
+
+        self.categoriesIndices = rounds[self.root.IATround]
+        if type(self.categoriesIndices) == list:
+            self.categoriesIndices = list(chain.from_iterable(self.categoriesIndices))
+        self.items = []
+        itemsPerCategory = int(itemsInRound[self.root.IATround] / len(self.categoriesIndices))
+        for i in self.categoriesIndices:
+            categoryItems = allItems[i]
+            #if n_items < itemsPerCategory:
+            self.items += categoryItems * (itemsPerCategory // n_items)
+            self.items += random.sample(categoryItems, itemsPerCategory % n_items)
+            #else:
+            #    self.items += random.sample(categoryItems, n_items)
+        random.shuffle(self.items)
+        self.trial = -1
+        
+    def finishText(self):
+        self.mainText.insert("1.0", mistake)
+        self.mainText["height"] = 3
+        self.mainText["font"] = "helvetica 15"
+        
+    def mistake(self):
+        self.mistakeLab = ttk.Label(self, text = 'X' , font = "arial 30 bold", background = "white",
+                                    foreground = "red")
+        self.mistakeLab.grid(row = 5, column = 1, columnspan = 3)
+
+    def run(self):
+        self.showItem()
+
+    def showItem(self):
+        self.trial += 1
+        if self.trial == itemsInRound[self.root.IATround] - 1:
+            self.nextFun()
+        self.item = self.items[self.trial]
+        if self.item.endswith(imageType):
+            self.image = PhotoImage(file = os.path.join(os.path.dirname(__file__), "IAT", self.item))
+            self.image = self.image.subsample(2)
+            self.itemLab["image"] = self.image
+        else:
+            self.textVar.set("Rotten") # upravit pro texty
+        self.bindKeys()
+        self.t0 = perf_counter()
+
+    def answered(self, answer, t1):
+        if False: # udelat kontrolu, zda je dobra odpoved
+            self.mistake()
+            # zapis odpovedi
+            return
+        # zapis odpovedi
+        self.unbindKeys()
+        self.itemLab["image"] = ""
+        self.update()
+        sleep(0.25)
+        self.showItem()          
+
+    def unbindKeys(self):
+        self.root.unbind("<e>")
+        self.root.unbind("<E>")
+        self.root.unbind("<i>")
+        self.root.unbind("<I>")        
+
+    def bindKeys(self):
+        self.root.bind("<e>", self.leftPressed)
+        self.root.bind("<E>", self.leftPressed)
+        self.root.bind("<i>", self.rightPressed)
+        self.root.bind("<I>", self.rightPressed)
+
+    def leftPressed(self, e):
+        t1 = perf_counter()
+        self.answered("E", t1)
+
+    def rightPressed(self, e):
+        t1 = perf_counter()
+        self.answered("I", t1)
+        
 
 
 def main():
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([Introduction
+    GUI([#Introduction,
+         #Instructions,
+         IAT#,
+         #Instructions,
+         #Instructions,
+         #Instructions,
+         #Instructions,
+         #Instructions,
+         #Instructions
          ])
 
 
