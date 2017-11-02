@@ -227,6 +227,7 @@ class Instructions(CommonFrame):
             self.root.IATround += 1
         else:
             self.root.IATround = 0
+            self.root.file.write("IAT")
         super().__init__(root)
 
     def finishInitialization(self):
@@ -295,11 +296,11 @@ class Instructions(CommonFrame):
     
 class IAT(CommonFrame):
     def __init__(self, root):
-        self.root = root #
-        if hasattr(self.root, "IATround"): #
-            self.root.IATround += 1 #
-        else: #
-            self.root.IATround = 0 #
+##        self.root = root #
+##        if hasattr(self.root, "IATround"): #
+##            self.root.IATround += 1 #
+##        else: #
+##            self.root.IATround = 3 #
         super().__init__(root)
 
     def finishInitialization(self):
@@ -312,6 +313,10 @@ class IAT(CommonFrame):
         self.filler = Canvas(self, background = "white", width = 1, height = 250,
                              highlightbackground = "white", highlightcolor = "white")
         self.filler.grid(row = 4, column = 0)
+
+        self.mistakeLab = ttk.Label(self, text = '' , font = "arial 30 bold", background = "white",
+                                    foreground = "red")
+        self.mistakeLab.grid(row = 5, column = 1, columnspan = 3)
         
         self.columnconfigure(0, weight = 1)
         self.columnconfigure(2, weight = 1)
@@ -327,11 +332,8 @@ class IAT(CommonFrame):
         itemsPerCategory = int(itemsInRound[self.root.IATround] / len(self.categoriesIndices))
         for i in self.categoriesIndices:
             categoryItems = allItems[i]
-            #if n_items < itemsPerCategory:
             self.items += categoryItems * (itemsPerCategory // n_items)
             self.items += random.sample(categoryItems, itemsPerCategory % n_items)
-            #else:
-            #    self.items += random.sample(categoryItems, n_items)
         random.shuffle(self.items)
         self.trial = -1
         
@@ -341,35 +343,44 @@ class IAT(CommonFrame):
         self.mainText["font"] = "helvetica 15"
         
     def mistake(self):
-        self.mistakeLab = ttk.Label(self, text = 'X' , font = "arial 30 bold", background = "white",
-                                    foreground = "red")
-        self.mistakeLab.grid(row = 5, column = 1, columnspan = 3)
+        self.mistakeLab["text"] = "X"
 
     def run(self):
         self.showItem()
 
     def showItem(self):
         self.trial += 1
-        if self.trial == itemsInRound[self.root.IATround] - 1:
+        if self.trial == itemsInRound[self.root.IATround]:
             self.nextFun()
+            return
         self.item = self.items[self.trial]
         if self.item.endswith(imageType):
             self.image = PhotoImage(file = os.path.join(os.path.dirname(__file__), "IAT", self.item))
             self.image = self.image.subsample(2)
             self.itemLab["image"] = self.image
         else:
-            self.textVar.set("Rotten") # upravit pro texty
+            self.textVar.set(self.item)
         self.bindKeys()
         self.t0 = perf_counter()
 
     def answered(self, answer, t1):
-        if False: # udelat kontrolu, zda je dobra odpoved
+        results = [self.root.IATround + 1, self.trial+1, self.item, answer, t1-self.t0, self.labelLeft,
+                   self.labelRight]
+        if len(self.categoriesIndices) == 4:
+            results += [self.labelLeft2, self.labelRight2]
+        if self.item.endswith(imageType):
+            correct = categoriesNames[2] if self.item in categoryOneItems else categoriesNames[3]
+        else:
+            correct = categoriesNames[0] if self.item in good_words else categoriesNames[1]
+        if not answer == correct:
             self.mistake()
-            # zapis odpovedi
+            self.file.write("\t".join(map(str, results)) + "\tincorrect" + "\n")
             return
-        # zapis odpovedi
+        self.file.write("\t".join(map(str, results)) + "\tcorrect" + "\n")
         self.unbindKeys()
+        self.mistakeLab["text"] = ""
         self.itemLab["image"] = ""
+        self.textVar.set("")
         self.update()
         sleep(0.25)
         self.showItem()          
@@ -388,25 +399,39 @@ class IAT(CommonFrame):
 
     def leftPressed(self, e):
         t1 = perf_counter()
-        self.answered("E", t1)
+        if type(self.indices) == list:
+            answer = self.labelLeft2 if self.item.endswith(imageType) else self.labelLeft
+        else:
+            answer = self.labelLeft 
+        self.answered(answer, t1)
 
     def rightPressed(self, e):
         t1 = perf_counter()
-        self.answered("I", t1)
+        if type(self.indices) == list:
+            answer = self.labelRight2 if self.item.endswith(imageType) else self.labelRight
+        else:
+            answer = self.labelRight
+        self.answered(answer, t1)
         
 
 
 def main():
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([#Introduction,
-         #Instructions,
-         IAT#,
-         #Instructions,
-         #Instructions,
-         #Instructions,
-         #Instructions,
-         #Instructions,
-         #Instructions
+    GUI([Introduction,
+         Instructions,
+         IAT,
+         Instructions,
+         IAT,
+         Instructions,
+         IAT,
+         Instructions,
+         IAT,
+         Instructions,
+         IAT,
+         Instructions,
+         IAT,
+         Instructions,
+         IAT
          ])
 
 
