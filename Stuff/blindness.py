@@ -31,7 +31,7 @@ changetext = "Pokud chcete, můžete své hodnocení ještě změnit. Změnu pro
 beh_answers = ["Nikdy", "Zřídka", "Občas", "Často", "Velmi často", "Vždy"]
 eval_answers = ["Velmi špatná", "Celkem špatná", "Spíše špatná", "Spíše dobrá", "Celkem dobrá", "Velmi dobrá"]
 
-beh_question = "Jak často tuto aktivitu provádíte?"
+beh_question = "Jak tuto aktivitu často provádíte?"
 eval_question = "Jak tuto aktivitu celkově hodnotíte?"
 
 beh_question2 = "Myslíte si, že tuto aktivitu provádíte častěji, než většina lidí v našem vzorku?"
@@ -56,12 +56,12 @@ n_manipulated = 3
 
 
 behavioral = []
-with open(os.path.join(os.path.dirname(__file__),"behavioral.txt")) as f:
+with open(os.path.join(os.path.dirname(__file__), "behavioral.txt")) as f:
     for line in f:
         behavioral.append(line.strip())
 
 evaluative = []
-with open(os.path.join(os.path.dirname(__file__),"evaluative.txt")) as f:
+with open(os.path.join(os.path.dirname(__file__), "evaluative.txt")) as f:
     for line in f:
         evaluative.append(line.strip())
 
@@ -177,8 +177,9 @@ class Situations(ExperimentFrame):
         rt = str(time() - self.t0)
         if type(self) is First:
             self.root.answers[self.trialText] = answer
-        self.file.write(str(self.count + 1) + "\t" + self.trialText + "\t" + str(trials[self.count][0]) + "\t" +
-                        trials[self.count][1] + "\t" + answer.replace(" ", "_") + "\t" + rt + "\n")
+        results = [self.id, str(self.count + 1), self.trialText, str(trials[self.count][0]),trials[self.count][1],
+                   answer.replace(" ", "_"), rt]
+        self.file.write("\t".join(results) + "\n")
         self.count += 1
         if self.count == n_items:
             self.nextFun()
@@ -209,10 +210,18 @@ class First(Situations):
     def displayQuestions(self):
         qtext = beh_question if trials[self.count][1] == "B" else eval_question
         answers = beh_answers if trials[self.count][1] == "B" else eval_answers
+        color = "green" if trials[self.count][1] == "B" else "blue"
         self.measure = Measure(self.questions, qtext, answers, "", "", function = self.answered,
                                questionPosition = "above")
         self.measure.question["font"] = "helvetica 16"
         self.measure.grid(row = 2, column = 0)
+        self.measure.question = Text(self.measure, width = len(qtext)-4, height = 1, relief = "flat",
+                                     background = "white", highlightbackground = "white", font = "helvetica 18")
+        self.measure.question.grid(column = 0, row = 0, columnspan = 4)
+        self.measure.question.insert("1.0", qtext)
+        index = self.measure.question.search("aktivitu", "1.0")
+        self.measure.question.tag_add("color", index + "+9c", "end")
+        self.measure.question.tag_configure("color", foreground = color, font = "helvetica 18 underline") 
 
     def answered(self):
         self.proceed(self.measure.answer.get())

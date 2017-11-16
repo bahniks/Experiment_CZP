@@ -227,13 +227,14 @@ class Product(Label):
     def clicked(self, _):
         name = os.path.basename(self.file)
         self.selected.append(name)
-        self.root.root.root.file.write("\t".join([str(self.root.root.root.order + 1),
-                                                 self.root.label["text"],
+        self.root.root.root.file.write("\t".join([self.root.root.root.id,
+                                                  str(self.root.root.root.order + 1),
+                                                  self.root.label["text"],
                                                   str(self.root.root.root.current[0]),
-                                                 self.root.root.leftProduct.label["text"],
-                                                 self.root.root.rightProduct.label["text"],
-                                                 str(time())]
-                                                  ) + "\n")
+                                                  self.root.root.leftProduct.label["text"],
+                                                  self.root.root.rightProduct.label["text"],
+                                                  str(time())]
+                                                 ) + "\n")
         self.root.proceed()
 
     def smallclicked(self, _):

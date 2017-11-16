@@ -114,7 +114,7 @@ class Measure(Canvas):
             values = range(1,6)            
 
         for n, value in enumerate(values, 1):
-            ttk.Radiobutton(self, text = str(value), value = n, variable = self.answer,
+            ttk.Radiobutton(self, text = str(value), value = n, variable = self.answer, 
                             command = self.check).grid(row = 1, column = n, padx = 4)
 
         self.columnconfigure(0, weight = 1)
@@ -133,14 +133,18 @@ class Measure(Canvas):
 
 
 
-class GEB2(Quest):
+class MFQ1(Quest):
     def __init__(self, root):
-        super().__init__(root, 9, "hexaco.txt", "Prosociality")
+        answers = ["zcela nepodstatné", "nepříliš podstatné", "mírně podstatné", "celkem podstatné",
+                   "velmi podstatné", "obzvlášť podstatné"]
+        super().__init__(root, 8, "mfq1.txt", "MFQ importance", answers = answers)
 
 
-class GEB1(Quest):
+class MFQ2(Quest):
     def __init__(self, root):
-        super().__init__(root, 9, "hexaco.txt", "Hexaco", answers = ["Ano", "Ne", "Nevím"],
+        answers = ["zcela nesouhlasím", "docela nesouhlasím", "trochu nesouhlasím", "trochu souhlasím",
+                   "docela souhlasím", "silně souhlasím"]
+        super().__init__(root, 8, "mfq2.txt", "MFQ attitudes", answers = answers,
                          likert = False)
         
 
@@ -148,5 +152,5 @@ class GEB1(Quest):
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
     GUI([#QuestInstructions,         
-         GEB1,
-         GEB2])
+         MFQ1,
+         MFQ2])

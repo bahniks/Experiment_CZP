@@ -278,5 +278,5 @@ def read_all(file):
     text = ""
     with open(os.path.join(os.path.dirname(__file__), file)) as f:
         for line in f:
-            text += line
+            text += line.rstrip(" \t")
     return text

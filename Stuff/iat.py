@@ -19,16 +19,16 @@ from gui import GUI
 # TEXTS #
 #########
 
-introtext = """Vaším úkolem bude používat klávesy 'E' a 'I' pro co nejrychlejší kategorizaci položek do skupin.
-Toto jsou zmiňované čtyři skupiny a položky, které do nich patří:"""
+introtext = """Nyní budete používat tlačítka "E" a "I" na klávesnici k tomu, abyste co nejrychleji roztřídili položky do skupin.
+Celkem jsou čtyři skupiny a v každé skupině jsou buď slova nebo obrázky, jak to ukazuje následující tabulka."""
 introtext2 = "Úloha má sedm částí. Dávejte pozor! Instrukce se liší u každé části."
 
 introTextIAT1 = """
-Použivejte prst levé ruky na klávese E pro položky, které náleží do kategorie {}.
-Použivejte prst pravé ruky na klávese I pro položky, které náleží do kategorie {}.
+Používejte prst levé ruky na klávese E pro zaznamenání položky, která náleží do kategorie {}.
+Používejte prst pravé ruky na klávese I pro zaznamenání položky, která náleží do kategorie {}.
 {}
-Pokud uděláte chybu, objeví se červené X. Zmáčkněte pak druhé tlačítko pro pokračování.
-Pracujte přesně a co nejrychleji.
+Pokud uděláte chybu, objeví se červené X. Abyste mohl(a) pokračovat, musíte zmáčknout druhou klávesu.
+Odpovídejte co nejrychleji, ale přesně.
 """
 
 byone = "Položky se budou objevovat po jedné.\n"
@@ -38,37 +38,40 @@ Používejte klávesu E pro {} a {}.
 Používejte klávesu I pro {} a {}.
 Každá položka náleží pouze do jedné kategorie.
 {}
-Pracujte přesně a co nejrychleji.
+Odpovídejte co nejrychleji, ale přesně.
 """
 
-mistake = "\nPokud uděláte chybu, objeví se červené X. Zmáčkněte pak druhé tlačítko pro pokračování."
-same = "\nTato část je stejná jako předchozí."
+mistake = "\nPokud uděláte chybu, objeví se červené X.\nAbyste mohl(a) pokračovat, musíte zmáčknout druhou klávesu."
+same = "\nTato část je stejná jako předchozí část."
 
 introTextIAT3 = """
 {}
-Použivejte prst levé ruky na klávese E pro kategorii {}.
-Použivejte prst pravé ruky na klávese I pro kategorii {}.
+Používejte prst levé ruky na klávese E pro kategorii {}.
+Používejte prst pravé ruky na klávese I pro kategorii {}.
 
-Pracujte přesně a co nejrychleji.
+Odpovídejte co nejrychleji, ale přesně.
 """
 
-positionchange = "Dávejte pozor, kategorie změnili pozice!"
+positionchange = "Pozor, označení skupin má nyní prohozenou stranu!"
+
 
 ##################################################################################################################
 # CATEGORIES #
 ##############
 
-good_words = ["Atraktivní", "Láska", "Radostný", "Smích", "Usměvavý", "Přítel", "Milý", "Nadšený"]
-bad_words = ["Prohnilý", "Nenávist", "Ponížit", "Strašlivý", "Sobecký", "Negativní", "Otravný", "Katastrofa"]
+good_words = ["Přitažlivý", "Láska", "Radostný", "Smích", "Usměvavý",
+              "Přítel", "Milý", "Nadšený", "Good1", "Good2"]
+bad_words = ["Prohnilý", "Nenávist", "Ponížit", "Strašlivý", "Sobecký",
+             "Negativní", "Otravný", "Katastrofa", "Bad1", "Bad2"]
 
-categoriesNames = ["Dobrý", "Špatný", "Světlé kočky", "Tmavé kočky"]
+categoriesNames = ["Dobrý", "Špatný", "Automobil", "Hromadná doprava"]
 
 ##################################################################################################################
 # SETTINGS #
 ############
 
 # format of names of picture files, e.g. ["s", "T"] corresponds to files named: s1.gif, s2.gif ..., T1.gif ...
-categories = ["s", "t"]
+categories = ["a", "m"]
 
 itemsInRound = [20, 20, 20, 40, 40, 20, 40]
 
@@ -79,8 +82,8 @@ files = os.listdir(os.path.join(os.path.dirname(__file__), "IAT"))
 n_items = int(len(files)/2)
 good_words = good_words[:n_items]
 bad_words = bad_words[:n_items]
-categoryOneItems = [file for file in files if categories[0] in file]
-categoryTwoItems = [file for file in files if categories[1] in file]
+categoryOneItems = [file for file in files if file.startswith(categories[0])]
+categoryTwoItems = [file for file in files if file.startswith(categories[1])]
 imageType = categoryOneItems[0][-4:]
 
 positions = random.sample([2,3], 2)
@@ -194,11 +197,11 @@ class CommonFrame(ExperimentFrame):
             self.labelLeft = categoriesNames[rounds[self.root.IATround][0]]
             self.labelRight = categoriesNames[rounds[self.root.IATround][1]]
         self.color = "green" if self.labelLeft in categoriesNames[2:4] else "blue"
-        self.categoryLeft = ttk.Label(self, text = self.labelLeft, font = "helvetica 22",
-                                      background = "white", foreground = self.color)
+        self.categoryLeft = ttk.Label(self, text = self.labelLeft, font = "helvetica 22", anchor = "center",
+                                      background = "white", foreground = self.color, width = 20)
         self.categoryLeft.grid(row = 2, column = 1)        
-        self.categoryRight = ttk.Label(self, text = self.labelRight, font = "helvetica 22",
-                                      background = "white", foreground = self.color)
+        self.categoryRight = ttk.Label(self, text = self.labelRight, font = "helvetica 22", anchor = "center",
+                                      background = "white", foreground = self.color, width = 20)
         self.categoryRight.grid(row = 2, column = 3)
 
         self.textLeft = ttk.Label(self, text = 'Zmáčkněte "E" pro' , font = "courier 11", background = "white")
@@ -313,16 +316,19 @@ class IAT(CommonFrame):
         self.filler = Canvas(self, background = "white", width = 1, height = 250,
                              highlightbackground = "white", highlightcolor = "white")
         self.filler.grid(row = 4, column = 0)
+        self.filler2 = Canvas(self, background = "white", width = 400, height = 1,
+                             highlightbackground = "white", highlightcolor = "white")
+        self.filler2.grid(row = 5, column = 2, sticky = N)
 
         self.mistakeLab = ttk.Label(self, text = '' , font = "arial 30 bold", background = "white",
                                     foreground = "red")
         self.mistakeLab.grid(row = 5, column = 1, columnspan = 3)
         
-        self.columnconfigure(0, weight = 1)
+        self.columnconfigure(0, weight = 2)
         self.columnconfigure(2, weight = 1)
-        self.columnconfigure(4, weight = 1)
+        self.columnconfigure(4, weight = 2)
         self.rowconfigure(0, weight = 3)
-        self.rowconfigure(4, weight = 3)
+        self.rowconfigure(4, weight = 1)
         self.rowconfigure(8, weight = 3)
 
         self.categoriesIndices = rounds[self.root.IATround]
@@ -356,15 +362,18 @@ class IAT(CommonFrame):
         self.item = self.items[self.trial]
         if self.item.endswith(imageType):
             self.image = PhotoImage(file = os.path.join(os.path.dirname(__file__), "IAT", self.item))
-            self.image = self.image.subsample(2)
+            self.image = self.image.zoom(2)
+            self.image = self.image.subsample(3)
             self.itemLab["image"] = self.image
         else:
             self.textVar.set(self.item)
+        self.update()
         self.bindKeys()
         self.t0 = perf_counter()
 
     def answered(self, answer, t1):
-        results = [self.root.IATround + 1, self.trial+1, self.item, answer, t1-self.t0, self.labelLeft,
+        self.unbindKeys()
+        results = [self.id, self.root.IATround + 1, self.trial+1, self.item, answer, t1-self.t0, self.labelLeft,
                    self.labelRight]
         if len(self.categoriesIndices) == 4:
             results += [self.labelLeft2, self.labelRight2]
@@ -374,16 +383,17 @@ class IAT(CommonFrame):
             correct = categoriesNames[0] if self.item in good_words else categoriesNames[1]
         if not answer == correct:
             self.mistake()
+            self.bindKeys()
             self.file.write("\t".join(map(str, results)) + "\tincorrect" + "\n")
             return
         self.file.write("\t".join(map(str, results)) + "\tcorrect" + "\n")
-        self.unbindKeys()
         self.mistakeLab["text"] = ""
         self.itemLab["image"] = ""
         self.textVar.set("")
         self.update()
         sleep(0.25)
-        self.showItem()          
+        self.showItem()
+        self.update()
 
     def unbindKeys(self):
         self.root.unbind("<e>")
