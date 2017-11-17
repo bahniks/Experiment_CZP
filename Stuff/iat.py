@@ -78,7 +78,9 @@ itemsInRound = [20, 20, 20, 40, 40, 20, 40]
 ##################################################################################################################
 
 
-files = os.listdir(os.path.join(os.path.dirname(__file__), "IAT"))
+all_files = os.listdir(os.path.join(os.path.dirname(__file__), "IAT"))
+small_files = [file for file in all_files if "small" in file]
+files = [file for file in all_files if "small" not in file]
 n_items = int(len(files)/2)
 good_words = good_words[:n_items]
 bad_words = bad_words[:n_items]
@@ -159,8 +161,8 @@ class Introduction(ExperimentFrame):
                 content = Canvas(categoriesFrames[row], background = bckg)
                 pictures = []
                 for col, file in enumerate(categoriesTexts[row]):
-                    img = PhotoImage(file = os.path.join(os.path.dirname(__file__), "IAT", file))
-                    img = img.subsample(4)
+                    img = PhotoImage(file = os.path.join(os.path.dirname(__file__), "IAT",
+                                                         file.replace(".ppm", "_small.ppm")))
                     self.images.append(img)
                     pictures.append(ttk.Label(content))
                     pictures[col]["image"] = img
@@ -362,8 +364,6 @@ class IAT(CommonFrame):
         self.item = self.items[self.trial]
         if self.item.endswith(imageType):
             self.image = PhotoImage(file = os.path.join(os.path.dirname(__file__), "IAT", self.item))
-            self.image = self.image.zoom(2)
-            self.image = self.image.subsample(3)
             self.itemLab["image"] = self.image
         else:
             self.textVar.set(self.item)
