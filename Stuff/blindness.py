@@ -26,7 +26,7 @@ ChoiceBlindnessInstructions3 = (InstructionsFrame, {"text": tintro, "height": 8}
 # TEXTS #
 #########
 
-changetext = "Pokud chcete, můžete své hodnocení ještě změnit. Změnu provedete zakliknutím odpovědi, kterou chcete vybrat."
+changetext = "(Pokud chcete, můžete své hodnocení ještě změnit. Změnu provedete zakliknutím odpovědi, kterou chcete vybrat.)"
 
 beh_answers = ["Nikdy", "Zřídka", "Občas", "Často", "Velmi často", "Vždy"]
 eval_answers = ["Velmi špatná", "Celkem špatná", "Spíše špatná", "Spíše dobrá", "Celkem dobrá", "Velmi dobrá"]
@@ -37,8 +37,8 @@ eval_question = "Jak tuto aktivitu celkově hodnotíte?"
 beh_question2 = "Myslíte si, že tuto aktivitu provádíte častěji, než většina lidí v našem vzorku?"
 eval_question2 = "Myslíte si, že tuto aktivitu hodnotíte pozitivněji, než většina lidí v našem vzorku?"
 
-beh_statement = "Tuto aktivitu provádíte:"
-eval_statement = "Tuto aktivitu hodnotíte:"
+beh_statement = "Uvedl(a) jste, že tuto aktivitu provádíte:"
+eval_statement = "Uvedl(a) jste, že tuto aktivitu hodnotíte:"
 
 blindnessQuestion = """
 Při druhém zobrazení situací Vám byla zobrazena Vaše původní odpověď na otázku, zda je popsané chování morálně špatné. Ve skutečnosti 5 z 40 těchto odpovědí bylo obráceno. Tj. pokud jste například původně odpověděli Ano, bylo Vám napsáno, že jste odpověděli Ne. Všiml(a) jste si této záměny?
@@ -48,8 +48,8 @@ Při druhém zobrazení situací Vám byla zobrazena Vaše původní odpověď n
 # SETTINGS #
 ############
 
-n_items = 8
-n_manipulated = 3
+n_items = 4
+n_manipulated = 2
 
 ##################################################################################################################
 
@@ -210,7 +210,7 @@ class First(Situations):
     def displayQuestions(self):
         qtext = beh_question if trials[self.count][1] == "B" else eval_question
         answers = beh_answers if trials[self.count][1] == "B" else eval_answers
-        color = "green" if trials[self.count][1] == "B" else "blue"
+        color = "green" if trials[self.count][1] == "B" else "orange"
         self.measure = Measure(self.questions, qtext, answers, "", "", function = self.answered,
                                questionPosition = "above")
         self.measure.question["font"] = "helvetica 16"
@@ -220,8 +220,8 @@ class First(Situations):
         self.measure.question.grid(column = 0, row = 0, columnspan = 4)
         self.measure.question.insert("1.0", qtext)
         index = self.measure.question.search("aktivitu", "1.0")
-        self.measure.question.tag_add("color", index + "+9c", "end")
-        self.measure.question.tag_configure("color", foreground = color, font = "helvetica 18 underline") 
+        self.measure.question.tag_add("color", index + "+9c", "end - 2chars")
+        self.measure.question.tag_configure("color", foreground = color, font = "helvetica 18 bold") 
 
     def answered(self):
         self.proceed(self.measure.answer.get())
@@ -235,20 +235,26 @@ class Second(Situations):
     def __init__(self, root):
         super().__init__(root)
 
+        self.rowconfigure(0, weight = 8)
+        self.rowconfigure(1, weight = 0)
+        self.rowconfigure(2, weight = 4)
+        self.rowconfigure(3, weight = 1)
+        self.rowconfigure(4, weight = 2)
+
         self.questions.root = self
         self.file.write("Choice blindness second part\n")
         self.filler["height"] = 400
 
     def displayQuestions(self):
-        self.label = ttk.Label(self.questions, text = changetext, background = "white", font = "helvetica 14")
-        self.label.grid(row = 1, column = 0, sticky = S)
+        self.label = ttk.Label(self.questions, text = changetext, background = "white", font = "helvetica 12")
+        self.label.grid(row = 2, column = 0, sticky = N, pady = 5)
         
         qtext = beh_statement if trials[self.count][1] == "B" else eval_statement
         answers = beh_answers if trials[self.count][1] == "B" else eval_answers
         self.measure = Measure(self.questions, qtext, answers, "", "", function = self.fakeFunction,
                                questionPosition = "above")
         self.measure.question["font"] = "helvetica 16"
-        self.measure.grid(row = 2, column = 0)
+        self.measure.grid(row = 1, column = 0)
         index = answers.index(self.root.answers[self.trialText])
         if trials[self.count][2] == "M":
             index = index - 3 if index > 2 else index + 3
