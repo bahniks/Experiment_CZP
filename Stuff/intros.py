@@ -20,13 +20,7 @@ Pro začátek klikněte na tlačítko Pokračovat.
 endingtext = """
 Děkujeme za Vaši účast!
 
-Dnešní výzkum sestával z několika samostatných studií:
-Dva experimenty se zabývaly morálním usuzováním. Vaším úkolem bylo odpovídat, do jaké míry považujete popsaná chování za špatná. Nás zajímal vliv časového tlaku a nutnosti obhajovat svoje rozhodnutí na Vaše morální úsudky. 
-V dalším experimentu jste měli vybírat, která kostka byla blíže dříve zobrazenému křížku. V tomto experimentu sledujeme, jestli volbu nějak ovlivní odměna, která je s ní spjatá.
-V jiném experimentu bylo Vaším úkolem porovnávat čas zobrazení dvou čtverců. Nás zajímalo, jestli vnímání času ovlivňuje barva a pozice čtverce.
-V experimentu, kde jste porovnávali, nakolik se Vám líbí dva rytmy, jsme testovali, zda lidé mají stejné preference u nižších frekvencí, jako byly dříve nalezeny u frekvencí vyšších.
-
-Podrobnější popis jednotlivých studií a jejich hypotéz Vám bude zaslán v průběhu nejbližších dní e-mailem. Prosíme, abyste tyto informace během sběru dat nešířili, zejména ne mezi potenciální účastníky. O ukončení sběru dat budete informováni rovněž e-mailem.
+Prosíme, abyste tyto informace během sběru dat nešířili, zejména ne mezi potenciální účastníky. O ukončení sběru dat budete informováni rovněž e-mailem.
 
 {}
 
