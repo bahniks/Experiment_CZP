@@ -19,7 +19,7 @@ class Demographics(ExperimentFrame):
         self.student = StringVar()
         self.field = StringVar()
         self.field.set("Nestuduji VŠ")
-        self.faith = StringVar()
+        self.education = StringVar()
 
         self.lab1 = ttk.Label(self, text = "Pohlaví:", background = "white",
                               font = "helvetica 15")
@@ -39,7 +39,7 @@ class Demographics(ExperimentFrame):
         self.lab6 = ttk.Label(self, text = "Pokud ano, jaký obor? ", background = "white",
                               font = "helvetica 15")
         self.lab6.grid(column = 1, row = 6, pady = 2, sticky = W, padx = 2)
-        self.lab7 = ttk.Label(self, text = "Jste věřící? ", background = "white",
+        self.lab7 = ttk.Label(self, text = "Jaké je vaše nejvyšší dosažené vzdělání? ", background = "white",
                               font = "helvetica 15")
         self.lab7.grid(column = 1, row = 7, pady = 2, sticky = W, padx = 2)
         
@@ -89,14 +89,13 @@ class Demographics(ExperimentFrame):
                                   "Jiné"]
         self.fieldCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())
 
-        self.faithCB = ttk.Combobox(self, textvariable = self.faith, width = 40,
+        self.educationCB = ttk.Combobox(self, textvariable = self.education, width = 22,
                                     font = "helvetica 14", state = "readonly")
-        self.faithCB["values"] = ["Ano, jsem aktivním členem / členkou nějaké církve nebo náboženského společenství",
-                                  "Ano, jsem pasivním členem / členkou nějaké církve nebo náboženského společenství",
-                                  "Ano, ale nejsem členem církve či společenství",
-                                  "Nevím",
-                                  "Ne"]
-        self.faithCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())
+        self.educationCB["values"] = ["Základní",
+                                      "Středoškolské bez maturity",
+                                      "Středoškolské s maturitou",
+                                      "Vysokoškolské"]
+        self.educationCB.bind("<<ComboboxSelected>>", lambda e: self.checkAllFilled())
         
 
         self.male.grid(column = 2, row = 1, pady = 7, padx = 7, sticky = W)
@@ -110,7 +109,7 @@ class Demographics(ExperimentFrame):
         self.yes.grid(column = 2, row = 5, pady = 7, padx = 7, sticky = W)
         self.no.grid(column = 3, row = 5, pady = 7, padx = 7, sticky = W)
         self.fieldCB.grid(column = 2, columnspan = 2, row = 6, pady = 7, padx = 7, sticky = W)
-        self.faithCB.grid(column = 2, columnspan = 3, row = 7, pady = 7, padx = 7, sticky = W)
+        self.educationCB.grid(column = 2, columnspan = 3, row = 7, pady = 7, padx = 7, sticky = W)
 
         self.columnconfigure(5, weight = 1)
         self.columnconfigure(0, weight = 1)
@@ -124,14 +123,14 @@ class Demographics(ExperimentFrame):
 
     def checkAllFilled(self, _ = None):
         if all([v.get() for v in [self.language, self.age, self.sex,
-                                  self.hand, self.field, self.student, self.faith]]):
+                                  self.hand, self.field, self.student, self.education]]):
             self.next["state"] = "!disabled"
 
     def write(self):
         self.file.write("Demographics\n")
         self.file.write("\t".join([self.id, self.sex.get(), self.age.get(), self.language.get(),
                                    self.hand.get(), self.student.get(), self.field.get(),
-                                   self.faith.get()]) + "\n")
+                                   self.education.get()]) + "\n")
 
 
 if __name__ == "__main__":

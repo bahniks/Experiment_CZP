@@ -10,9 +10,9 @@ from gui import GUI
 
 from blindness import ChoiceBlindnessInstructions1, ChoiceBlindness1, ChoiceBlindnessInstructions2
 from blindness import ChoiceBlindness2, ChoiceBlindnessInstructions3, DebriefingOne, DebriefingTwo
-from products import Choices
+from products import Choices, ProductsIntro
 from mfq import MFQ1, MFQ2
-from intros import ending, Intro
+from intros import ending, Intro, Debriefing
 from comments import Comments
 from demo import Demographics
 from validation import Validation
@@ -41,16 +41,18 @@ frames = [Intro,
           IAT,
           Instructions,
           IAT,
-          Choices, # choice of products
+          ProductsIntro, # choice of products
+          Choices, 
           MFQ1, # moral foundations questionnaire
           MFQ2,
           DebriefingOne, # debriefing for choice blindness
           DebriefingTwo,
           Demographics,
           Comments,
+          Debriefing,
           ending
          ]
 
-
+frames = [Debriefing]
 
 GUI(frames)

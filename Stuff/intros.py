@@ -15,6 +15,19 @@ Kliknutím na tlačítko Pokračovat vyjadřujete svůj souhlas s účastí a an
 Pro začátek klikněte na tlačítko Pokračovat.
 """
 
+debriefingtext = """
+Dnešní výzkum sestával z několika samostatných studií:
+
+Elektronický dotazník, který jste vyplňoval(a) před několika dny sloužil k měření postojů k životnímu prostředí.
+
+První dva úkoly v experimentu se týkaly tzv. slepoty k volbě. Je to známý a dnes už relativně dobře popsaný jev, který spočívá v tom, že lidé dělají určité volby, aniž by měli jednoznačně vyhraněné preference a následně dokáží jen obtížně odhalit, když se jejich původní volba změní. Nás zajímalo, jestli tento proces probíhá odlišně u popisu vlastního chování a u hodnocení chování. 
+
+Následující experiment se týkal toho, jestli mají lidé tendenci hodnotit nemorální chování druhých pozitivněji, pokud takoví lidé současně chrání životní prostředí. Tento experiment testuje hypotézy odvozené z teorie morální licence.
+
+Poslední úkol, při němž jste si vybíral(a) výrobky sloužil ke zkoumání vašich preferencí s ohledem na cenu, množství a další charakteristiky výrobků (např. jejich zelený profil). 
+
+Pro pokračování klikněte na tlačítko Pokračovat.
+"""
 
 
 endingtext = """
@@ -32,7 +45,7 @@ winending = "V loterii jste byl/a vylosován/a a z vybraných produktů si tedy 
 lostending = "V loterii jste nebyl/a vylosován/a a bohužel si tedy domů vybrané produkty neodnesete."
 
 Intro =(InstructionsFrame, {"text": intro})
-
+Debriefing =(InstructionsFrame, {"text": debriefingtext, "height": 22})
 
 
 class Ending(InstructionsFrame):
@@ -40,7 +53,7 @@ class Ending(InstructionsFrame):
         pass
     
     def __call__(self, root):
-        win = random.random() < 1/5
+        win = random.random() < 1/8
         if win:
             keys = [key for key in root.selected.keys()]
             keys = random.sample(keys, 3)

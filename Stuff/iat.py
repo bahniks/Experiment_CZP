@@ -60,9 +60,9 @@ positionchange = "Pozor, označení skupin má nyní prohozenou stranu!"
 ##############
 
 good_words = ["Přitažlivý", "Láska", "Radostný", "Smích", "Usměvavý",
-              "Přítel", "Milý", "Nadšený", "Good1", "Good2"]
+              "Přítel", "Milý", "Nadšený", "Potěšení", "Báječný"]
 bad_words = ["Prohnilý", "Nenávist", "Ponížit", "Strašlivý", "Sobecký",
-             "Negativní", "Otravný", "Katastrofa", "Bad1", "Bad2"]
+             "Negativní", "Otravný", "Katastrofa", "Bolest", "Ošklivý"]
 
 categoriesNames = ["Dobrý", "Špatný", "Automobil", "Hromadná doprava"]
 

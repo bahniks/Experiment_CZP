@@ -27,8 +27,16 @@ from gui import GUI
 questionText = """Který z dvojice výrobků byste si raději odnesl(a) domů?
 Vyberte kliknutím na obrázek."""
 
+intro = """
+Blížíme se ke konci tohoto experimentálního sezení. Jako malé poděkování vylosujeme každého osmého respondenta, který vyhraje nad rámec své odměny několik výrobků podle vlastního výběru. 
+
+Nyní Vám postupně ukážeme 48 párů výrobků. U každého páru klikněte na ten výrobek, který by se Vám líbil více. Máte šanci 1:8, že vyhrajete 3 výrobky, které si vyberete. Vybírejte proto prosím pečlivě, později už není možné volbu změnit. 
+"""
+
 ##################################################################################################################
 
+
+ProductsIntro =(InstructionsFrame, {"text": intro, "height": 7})
 
 
 class Choices(ExperimentFrame):
@@ -204,7 +212,8 @@ class Product(Label):
 
 def main():
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([Choices
+    GUI([ProductsIntro,
+         Choices
          ])
 
 
