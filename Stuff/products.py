@@ -38,6 +38,9 @@ Nyní Vám postupně ukážeme 48 párů výrobků. U každého páru klikněte 
 
 ProductsIntro =(InstructionsFrame, {"text": intro, "height": 7})
 
+with open(os.path.join(os.path.dirname(__file__), "Products", "products.txt")) as f:
+    infos = [line.rstrip().split("\t") for line in f]
+
 
 class Choices(ExperimentFrame):
     def __init__(self, root):
@@ -46,11 +49,11 @@ class Choices(ExperimentFrame):
         self.file.write("Products\n")
         
         files = os.listdir(os.path.join(os.path.dirname(__file__), "Products"))
-        products = [int(file.split("_")[0]) for file in files if file.endswith("_1.gif")]
+        products = [int(file.split("_")[0]) for file in files if file.endswith("_1.ppm")]
 
-        self.pairs = [[("{}_1.gif".format(i), "{}_2.gif".format(i)),
-                       ("{}_1.gif".format(i), "{}_3.gif".format(i)),
-                       ("{}_2.gif".format(i), "{}_3.gif".format(i))] for i in products]
+        self.pairs = [[("{}_1.ppm".format(i), "{}_2.ppm".format(i)),
+                       ("{}_1.ppm".format(i), "{}_3.ppm".format(i)),
+                       ("{}_2.ppm".format(i), "{}_3.ppm".format(i))] for i in products]
         self.pairs = list(chain(*self.pairs))
         for i in range(len(self.pairs)):
             if random.randint(0,1) == 1:
@@ -130,7 +133,8 @@ class OneProduct(Canvas):
         self.product = Product(self)
         self.product.grid(column = 1, row = 0)
 
-        self.label = ttk.Label(self, text = "", background = "white", font = "helvetica 15")
+        self.label = ttk.Label(self, text = "", background = "white", font = "helvetica 14", width = 60,
+                               anchor = "center")
         self.label.grid(column = 1, row = 1, pady = 8)
         self.bottomLabel = ttk.Label(self, text = "", background = "white",
                                      font = "helvetica 13")
@@ -142,13 +146,12 @@ class OneProduct(Canvas):
     def changeImage(self, file):
         self.product.changeImage(file)
         description = ""
-        filename = os.path.join(os.path.dirname(__file__), "Products", file)
-        with open(filename.replace(".gif", ".txt")) as f:
-            for num, line in enumerate(f):
-                if num == 0:
-                    self.label["text"] = line.strip()
-                else:
-                    description += line
+        filenum = file.rstrip(".ppm").split("_")
+        for num, content in enumerate(infos[(int(filenum[1]) - 1)*16 + int(filenum[0])]):
+            if num == 0:
+                self.label["text"] = content.strip()
+            else:
+                description += content + "\n"
         self.bottomLabel["text"] = description
             
     def proceed(self):

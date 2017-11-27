@@ -33,16 +33,17 @@ Pro pokračování klikněte na tlačítko Pokračovat.
 endingtext = """
 Děkujeme za Vaši účast!
 
-Prosíme, abyste tyto informace během sběru dat nešířili, zejména ne mezi potenciální účastníky. O ukončení sběru dat budete informováni rovněž e-mailem.
+Prosíme, abyste informace o těchto experimentech nešířil(a) během následujících 3 měsíců. Zejména Vás žádáme, abyste tyto informace nešířil(a) mezi potenciální účastníky a účastnice těchto experimentů. 
 
 {}
 
-Nyní si můžete vzít své věci, papírek s číslem pracovního místa a výší odměny a přejít do vedlejší místnosti, kde Vám bude odměna vyplacena. 
+Nyní si můžete vzít své věci a přejít do vedlejší místnosti, kde Vám bude vyplacena odměna. 
 Tím Vaše účast na dnešní studii končí. Ještě jednou děkujeme!
 """
 
-winending = "V loterii jste byl/a vylosován/a a z vybraných produktů si tedy jako výhru tři odnesete. Na papírek ležící na stole napište číslo Vašeho pracovního místa a níže uvedené kódy vyhraných produktů:\n{}\n{}\n{}"
-lostending = "V loterii jste nebyl/a vylosován/a a bohužel si tedy domů vybrané produkty neodnesete."
+winending = "V loterii jste byl(a) vylosován(a) a z vybraných produktů si tedy jako výhru tři odnesete. Z výrobků, které jste si vybral(a), byly tři náhodně vylosovány. Na papírek ležící na stole napište číslo Vašeho pracovního místa a níže uvedené kódy vyhraných produktů:\n{}\n{}\n{}\n\nPapírek si s sebou vezměte a předejte ho experimentátorovi."
+lostending = "V loterii jste nebyl(a) vylosován/a a bohužel si tedy domů vybrané produkty neodnesete. Dostanete však samozřejmě svou řádnou odměnu za účast v experimentu."
+
 
 Intro =(InstructionsFrame, {"text": intro})
 Debriefing =(InstructionsFrame, {"text": debriefingtext, "height": 22})

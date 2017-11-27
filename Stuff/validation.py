@@ -10,7 +10,7 @@ from gui import GUI
 
 
 
-instruction = """Do textového pole napište své identifikační číslo.
+instruction = """Do textového pole napište své identifikační číslo, které jste obdržel(a) na papírku.
 Pokud budete mít s přihlášením problém, zavolejte experimentátora zvednutím ruky."""
 
 
