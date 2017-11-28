@@ -211,12 +211,12 @@ class Measure(Canvas):
 
         if text:        
             if questionPosition == "next":
-                self.question = ttk.Label(self, text = text, background = "white", anchor = "e",
+                self.question = ttk.Label(self, texte = text, background = "white", anchor = "e",
                                           width = len(text) + 15, font = "helvetica 14")
                 self.question.grid(column = 0, row = 2, sticky = E, padx = 5)
             elif questionPosition == "above":
-                self.question = ttk.Label(self, text = text, background = "white",
-                                          anchor = "center", font = "helvetica 14")
+                self.question = ttk.Label(self, text = text, background = "white", anchor = "center",
+                                          font = "helvetica 14")
                 self.question.grid(column = 0, row = 0, columnspan = 4)
 
         if labelPosition != "none":
@@ -228,8 +228,8 @@ class Measure(Canvas):
             self.left.grid(column = 1, row = 1, sticky = W)
             self.right.grid(column = 2, row = 1, sticky = E)
         elif labelPosition == "next":
-            self.left.grid(column = 0, row = 2, sticky = W)
-            self.right.grid(column = 3, row = 2, sticky = E)
+            self.left.grid(column = 0, row = 2, sticky = E)
+            self.right.grid(column = 3, row = 2, sticky = W)
 
         if middle:
             self.middle = ttk.Label(self, text = middle, background = "white",
@@ -239,12 +239,14 @@ class Measure(Canvas):
 
         self.scale = Canvas(self, background = "white", highlightbackground = "white",
                             highlightcolor = "white")
-        self.scale.grid(column = 1, row = 2, sticky = W, columnspan = 2, padx = 40)
+        self.scale.grid(column = 1, row = 2, sticky = EW, columnspan = 2, padx = 40)
 
+        self.radios = []
         for col, value in enumerate(values):
             padx = 4 if not middle else 18
-            ttk.Radiobutton(self.scale, text = str(value), value = value, command = self.func,
-                            variable = self.answer).grid(row = 0, column = col, padx = padx)
+            self.radios.append(ttk.Radiobutton(self.scale, text = str(value), value = value,
+                                               command = self.func, variable = self.answer))
+            self.radios[col].grid(row = 0, column = col, padx = padx)
             self.scale.columnconfigure(col, weight = 1)
         if filler:
             self.filler = Canvas(self.scale, background = "white", width = filler, height = 1,
