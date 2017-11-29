@@ -41,14 +41,14 @@ beh_statement = "Uvedl(a) jste, že tuto aktivitu provádíte:"
 eval_statement = "Uvedl(a) jste, že tuto aktivitu hodnotíte:"
 
 blindnessQuestion = """
-V jedné části experimentu jsme Vám ukazovali Vaše původní odpovědi na otázku, jestli určitá chování hodnotíte jako dobré nebo špatné, anebo jak často tato chování vykonáváte. Ve skutečnosti bylo 5 ze 47 těchto odpovědí posunuto o tři body opačným směrem. Tj. pokud jste například původně odpověděl(a) "Celkem špatné", zobrazilo se Vám "Spíše dobré" a pokud jste odpověděl(a) "Zřídka", zobrazilo se Vám "Často". Všiml(a) jste si této záměny?
+V jedné části experimentu jsme Vám ukazovali Vaše původní odpovědi na otázku, jestli určitá chování hodnotíte jako dobré nebo špatné, anebo jak často tato chování vykonáváte. Ve skutečnosti bylo 5 ze 46 těchto odpovědí posunuto o tři body opačným směrem. Tj. pokud jste například původně odpověděl(a) "Celkem špatné", zobrazilo se Vám "Spíše dobré" a pokud jste odpověděl(a) "Zřídka", zobrazilo se Vám "Často". Všiml(a) jste si této záměny?
 """ 
 
 ##################################################################################################################
 # SETTINGS #
 ############
 
-n_items = 47
+n_items = 46
 n_manipulated = 5
 
 ##################################################################################################################
@@ -92,7 +92,7 @@ class Situations(ExperimentFrame):
         self.upfiller.grid(row = 0, column = 1, rowspan = 2)
         
         self.text = Text(self, font = "helvetica 22", relief = "flat", background = "white",
-                         width = self.nchar - 8, height = 4, cursor = "arrow",
+                         width = self.nchar, height = 4, cursor = "arrow",
                          selectbackground = "white", selectforeground = "black")
         self.text.grid(row = 1, column = 0, padx = 2, sticky = S)
 

@@ -44,10 +44,10 @@ frames = [Intro,
           IAT,
           CharacterIntro, # credentials/credits
           Character,
-          ProductsIntro, # choice of products
-          Choices, 
           MFQ1, # moral foundations questionnaire
           MFQ2,
+          ProductsIntro, # choice of products
+          Choices, 
           DebriefingOne, # debriefing for choice blindness
           DebriefingTwo,
           Demographics,
@@ -56,6 +56,6 @@ frames = [Intro,
           ending
          ]
 
-frames = [Debriefing]
+
 
 GUI(frames)

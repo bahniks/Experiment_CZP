@@ -13,11 +13,11 @@ class GUI(Tk):
         
         self.title("Experiment")
         self.config(bg = "white")
-        #self.attributes("-fullscreen", True) # for testing
-        #self.attributes("-topmost", True) # for testing
+        self.attributes("-fullscreen", True) # for testing
+        self.attributes("-topmost", True) # for testing
         self.overrideredirect(True) # for testing
         self.protocol("WM_DELETE_WINDOW", lambda: self.closeFun())
-        self.geometry("1680x1050") # for testing
+        #self.geometry("1680x1050") # for testing
 
         self.screenwidth = 1680 # adjust
         self.screenheight = 1050 # adjust
@@ -50,7 +50,7 @@ class GUI(Tk):
         
 
     def nextFrame(self):
-        #self.file.write(strftime("%H:%M:%S", localtime()) + "\n\n") # for testing
+        self.file.write(strftime("%H:%M:%S", localtime()) + "\n\n") # for testing
         self.count += 1
         if self.count >= len(self.order):
             self.destroy()
@@ -70,8 +70,8 @@ class GUI(Tk):
     def closeFun(self, event = ""):
         self.frame.write()
         message = "Jste si jistí, že chcete studii předčasně ukončit? "
-        ans = True
-        #ans = messagebox.askyesno(message = message, icon = "question", parent = self,
-        #                          title = "Ukončit studii?")
+        #ans = True
+        ans = messagebox.askyesno(message = message, icon = "question", parent = self,
+                                  title = "Ukončit studii?")
         if ans:
             self.destroy() 

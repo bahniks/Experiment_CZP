@@ -20,14 +20,19 @@ Dnešní výzkum sestával z několika samostatných studií:
 
 Elektronický dotazník, který jste vyplňoval(a) před několika dny sloužil k měření postojů k životnímu prostředí.
 
-První dva úkoly v experimentu se týkaly tzv. slepoty k volbě. Je to známý a dnes už relativně dobře popsaný jev, který spočívá v tom, že lidé dělají určité volby, aniž by měli jednoznačně vyhraněné preference a následně dokáží jen obtížně odhalit, když se jejich původní volba změní. Nás zajímalo, jestli tento proces probíhá odlišně u popisu vlastního chování a u hodnocení chování. 
+První dva úkoly v experimentu se týkaly tzv. slepoty k volbě. Je to známý a dnes už relativně dobře popsaný jev, který spočívá v tom, že lidé dělají určité volby, aniž by měli jednoznačně vyhraněné preference a následně dokáží jen obtížně odhalit, když se jejich původní volba změní. Nás zajímalo, jestli tento proces probíhá odlišně u popisu vlastního chování a u hodnocení chování.
+
+Další část obsahovala takzvaný implicitní asociační test. Tento test jsme použili k měření postojů k hromadné dopravě a k osobní automobilové dopravě. 
 
 Následující experiment se týkal toho, jestli mají lidé tendenci hodnotit nemorální chování druhých pozitivněji, pokud takoví lidé současně chrání životní prostředí. Tento experiment testuje hypotézy odvozené z teorie morální licence.
 
-Poslední úkol, při němž jste si vybíral(a) výrobky sloužil ke zkoumání vašich preferencí s ohledem na cenu, množství a další charakteristiky výrobků (např. jejich zelený profil). 
+V další části studie byla zařazena škála na měření morálních hodnot.
+
+Poslední úkol, při němž jste si vybíral(a) výrobky, sloužil ke zkoumání vašich preferencí s ohledem na cenu, množství a další charakteristiky výrobků (např. jejich zelený profil). 
 
 Pro pokračování klikněte na tlačítko Pokračovat.
 """
+
 
 
 endingtext = """
