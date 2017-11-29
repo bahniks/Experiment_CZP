@@ -50,7 +50,7 @@ class GUI(Tk):
         
 
     def nextFrame(self):
-        self.file.write(strftime("%H:%M:%S", localtime()) + "\n\n") # for testing
+        #self.file.write(strftime("%H:%M:%S", localtime()) + "\n\n") # for testing
         self.count += 1
         if self.count >= len(self.order):
             self.destroy()

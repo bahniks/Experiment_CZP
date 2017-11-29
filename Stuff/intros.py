@@ -60,7 +60,7 @@ class Ending(InstructionsFrame):
     
     def __call__(self, root):
         win = random.random() < 1/8
-        if win:
+        if win and hasattr(root, "selected"):
             keys = [key for key in root.selected.keys()]
             keys = random.sample(keys, 3)
             prize = []

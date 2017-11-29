@@ -121,7 +121,7 @@ class Character(ExperimentFrame):
         
     def proceed(self):
         self.order += 1
-        if self.order == n_items-1:
+        if self.order == n_items:
             self.nextFun()
         else:
             self.text["state"] = "normal"
@@ -152,5 +152,5 @@ class Character(ExperimentFrame):
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
-    GUI([#CharacterIntro,
+    GUI([CharacterIntro,
          Character])

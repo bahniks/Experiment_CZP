@@ -147,7 +147,7 @@ class OneProduct(Canvas):
         self.product.changeImage(file)
         description = ""
         filenum = file.rstrip(".ppm").split("_")
-        for num, content in enumerate(infos[(int(filenum[1]) - 1)*16 + int(filenum[0])]):
+        for num, content in enumerate(infos[(int(filenum[1]) - 1)*16 + int(filenum[0]) - 1]):
             if num == 0:
                 self.label["text"] = content.strip()
             else:

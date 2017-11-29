@@ -308,7 +308,7 @@ class DebriefingOne(ExperimentFrame):
               "Myslíte si, že bychom měli použít Vaše odpovědi?")
         q2 = "Všiml(a) jste si něčeho neočekávaného během experimentu?"
 
-        self.question1 = Question(self, q1, label = False)
+        self.question1 = Question(self, q1, label = False, lines = 3)
         self.question2 = Question(self, q2, (ttk.Entry, {"width": 100}),
                                   condtype = "entry", condtext = "Čeho jste si všimli?")
 
@@ -339,7 +339,9 @@ class DebriefingOne(ExperimentFrame):
         self.warning.config(foreground = "red")
 
     def write(self):
-        self.question1.write()
+        self.file.write(self.id + "\t")
+        self.question1.write(newline = False)
+        self.file.write("\t")
         self.question2.write()
 
     def rated(self):
@@ -349,7 +351,7 @@ class DebriefingOne(ExperimentFrame):
        
 class Question(Canvas):
     def __init__(self, root, text, conditional = None, condtype = None, condtext = "", width = 80,
-                 label = True, answer = "yesno", condition = "yes"):
+                 label = True, answer = "yesno", condition = "yes", lines = 5):
         super().__init__(root)
         self["background"] = "white"
         self["highlightbackground"] = "white"
@@ -361,14 +363,14 @@ class Question(Canvas):
         self.condition = condition
 
         self.answer = StringVar()
-        ttk.Style().configure("TRadiobutton", background = "white", font = "helvetica 13")
+        ttk.Style().configure("TRadiobutton", background = "white", font = "helvetica 14")
 
         if label:
             self.label = ttk.Label(self, text = text, background = "white", font = "helvetica 15",
                                    width = width)
         else:
             self.label = Text(self, width = width, wrap = "word", font = "helvetica 15",
-                              relief = "flat", height = 5, cursor = "arrow",
+                              relief = "flat", height = lines, cursor = "arrow",
                               selectbackground = "white", selectforeground = "black")
             self.label.insert("1.0", text)
             self.label.config(state = "disabled")
@@ -455,7 +457,7 @@ class DebriefingTwo(ExperimentFrame):
              
         self.question1 = Question(self, q1, (ttk.Entry, {"width": 100}), width = 90,
                                   condtype = "entry", condtext = q1a)
-        self.question2 = Question(self, q2, label = False)
+        self.question2 = Question(self, q2, label = False, lines = 6)
         self.question3 = Question(self, q3, width = 90)
 
         self.question1.grid(row = 1, column = 1, sticky = "w")
@@ -481,7 +483,7 @@ class DebriefingTwo(ExperimentFrame):
 
         self.can1 = Canvas(self, background = "white", highlightbackground = "white", height = 100,
                            width = 1).grid(row = 1, column = 0, sticky = (N, S))
-        self.can2 = Canvas(self,background = "white", highlightbackground = "white", height = 190,
+        self.can2 = Canvas(self,background = "white", highlightbackground = "white", height = 220,
                            width = 1).grid(row = 2, column = 0, sticky = (N, S))
         self.can3 = Canvas(self, background = "white", highlightbackground = "white", height = 100,
                            width = 1).grid(row = 3, column = 0, sticky = (N, S))
@@ -503,17 +505,21 @@ class DebriefingTwo(ExperimentFrame):
     def proceed(self):
         if self.check():
             if self.num == 3:
+                self.file.write("\t")
                 self.question3.write()
                 self.nextFun()
                 return
             elif self.num == 2:
                 self.question3.grid(row = 3, column = 1, sticky = "w")
                 self.question2.disable()
-                self.question2.write()
+                self.file.write("\t")
+                self.question2.write(newline = False)
             elif self.num == 1:
                 self.question2.grid(row = 2, column = 1, sticky = "w")
                 self.question1.disable()
-                self.question1.write()
+                self.file.write(self.id)
+                self.file.write("\t")
+                self.question1.write(newline = False)
             self.num += 1
             self.warning.config(foreground = "white")
         else:

@@ -232,7 +232,6 @@ class Instructions(CommonFrame):
             self.root.IATround += 1
         else:
             self.root.IATround = 0
-            self.root.file.write("IAT")
         super().__init__(root)
 
     def finishInitialization(self):
@@ -306,6 +305,7 @@ class IAT(CommonFrame):
 ##            self.root.IATround += 1 #
 ##        else: #
 ##            self.root.IATround = 3 #
+        root.file.write("IAT" + str(root.IATround + 1) + "\n")
         super().__init__(root)
 
     def finishInitialization(self):
@@ -354,6 +354,7 @@ class IAT(CommonFrame):
         self.mistakeLab["text"] = "X"
 
     def run(self):
+        sleep(0.25)
         self.showItem()
 
     def showItem(self):
