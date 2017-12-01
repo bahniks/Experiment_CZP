@@ -15,7 +15,7 @@ from common import read_all
 
 intro = """
 Následující úkol se týká usuzování o druhých lidech.
-Postupně Vám popíšeme osm lidí. U každého člověka Vám ukážeme čtyři výroky, které o něm řekli jeho blízcí. Následně vám popíšeme určitou situaci. Po vás budeme chtít, abyste na základě těchto informací zhodnotit tohoto člověka a situaci, v níž se ocitl.
+Postupně Vám popíšeme osm lidí. U každého člověka Vám ukážeme čtyři výroky, které o něm řekli jeho blízcí. Následně vám popíšeme určitou situaci. Po vás budeme chtít, abyste na základě těchto informací zhodnotil(a) tohoto člověka a situaci, v níž se ocitl.
 """
 
 

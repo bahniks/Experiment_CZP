@@ -41,15 +41,15 @@ beh_statement = "Uvedl(a) jste, že tuto aktivitu provádíte:"
 eval_statement = "Uvedl(a) jste, že tuto aktivitu hodnotíte:"
 
 blindnessQuestion = """
-V jedné části experimentu jsme Vám ukazovali Vaše původní odpovědi na otázku, jestli určitá chování hodnotíte jako dobré nebo špatné, anebo jak často tato chování vykonáváte. Ve skutečnosti bylo 5 ze 46 těchto odpovědí posunuto o tři body opačným směrem. Tj. pokud jste například původně odpověděl(a) "Celkem špatné", zobrazilo se Vám "Spíše dobré" a pokud jste odpověděl(a) "Zřídka", zobrazilo se Vám "Často". Všiml(a) jste si této záměny?
+V jedné části experimentu jsme Vám ukazovali Vaše původní odpovědi na otázku, jestli určitá chování hodnotíte jako dobrá nebo špatná, anebo jak často tato chování vykonáváte. Ve skutečnosti byly v 6 ze 46 těchto případů Vaše odpovědi posunuty o tři body opačným směrem. Tj. pokud jste například původně odpověděl(a) "Celkem špatné", zobrazilo se Vám "Spíše dobré" a pokud jste odpověděl(a) "Zřídka", zobrazilo se Vám "Často". Všiml(a) jste si této záměny?
 """ 
 
 ##################################################################################################################
 # SETTINGS #
 ############
 
-n_items = 46
-n_manipulated = 5
+n_items = 46 # must be even!
+n_manipulated = 6 # must be even!
 
 ##################################################################################################################
 
@@ -68,8 +68,15 @@ with open(os.path.join(os.path.dirname(__file__), "evaluative.txt")) as f:
 items = random.sample([i for i in range(len(behavioral))], n_items)
 eval_behav = ["E"]*int(n_items/2) + ["B"]*int(n_items/2)
 random.shuffle(eval_behav)
-manipulated = ["M"]*(n_manipulated) + ["n"]*(n_items-n_manipulated)
-random.shuffle(manipulated)
+evals = [num for num, content in enumerate(eval_behav) if content == "E"]
+behavs = [num for num, content in enumerate(eval_behav) if content == "B"]
+indices = random.sample(evals, int(n_manipulated/2)) + random.sample(behavs, int(n_manipulated/2))
+manipulated = []
+for i in range(len(eval_behav)):
+    if i in indices:
+        manipulated.append("M")
+    else:
+        manipulated.append("n")
 
 trials = [i for i in zip(items, eval_behav, manipulated)]
 
@@ -92,7 +99,7 @@ class Situations(ExperimentFrame):
         self.upfiller.grid(row = 0, column = 1, rowspan = 2)
         
         self.text = Text(self, font = "helvetica 22", relief = "flat", background = "white",
-                         width = self.nchar, height = 4, cursor = "arrow",
+                         width = self.nchar, height = 4, cursor = "arrow", wrap = "word",
                          selectbackground = "white", selectforeground = "black")
         self.text.grid(row = 1, column = 0, padx = 2, sticky = S)
 
@@ -118,53 +125,13 @@ class Situations(ExperimentFrame):
         trial = trials[self.count]
         situations = behavioral if trial[1] == "B" else evaluative
         self.trialText = situations[trial[0]]
-        words = self.trialText.split(" ")
-        chars = 0
-        temp = []
-        for word in words:
-            chars += len(word)
-            if chars > self.nchar:
-                self.content.append(temp)
-                temp = [word]
-                chars = len(word) + 1
-            else:
-                chars += 1
-                temp.append(word)
-        else:
-            self.content.append(temp)
-
-        self.content = [" ".join(line) for line in self.content]
-        
+       
     def run(self):
         self.config(cursor = "none")
         self.text.config(state = "normal")
         self.initializeText()
         self.text.delete("1.0", "end")
-        t = time()
-        line = 0
-        char = 0
-        allchars = 0
-        letter = 0.065 # 0.065 seconds per letter 
-        pause = 0.35 # 0.35 seconds after a line 
-        while True:
-            self.update()
-            curLine = self.content[line]
-            if not curLine:
-                line += 1
-                continue
-            if time() > t + allchars*letter + line*pause:
-                self.text.insert("end", curLine[char], ("standard"))
-                char += 1
-                allchars += 1
-                if char == len(curLine):
-                    line += 1
-                    char = 0
-                    if line == len(self.content):
-                        self.update()
-                        break
-                    else:
-                        self.text.insert("end", "\n")
-
+        self.text.insert("1.0", self.trialText)
         self.config(cursor = "")
         self.displayWidgets()
         self.t0 = time()
@@ -196,7 +163,7 @@ class Situations(ExperimentFrame):
         self.text.delete("1.0", "end")
         
         self.update()
-        sleep(0.5)
+        sleep(0.25)
     
 
 
@@ -310,7 +277,7 @@ class DebriefingOne(ExperimentFrame):
 
         self.question1 = Question(self, q1, label = False, lines = 3)
         self.question2 = Question(self, q2, (ttk.Entry, {"width": 100}),
-                                  condtype = "entry", condtext = "Čeho jste si všimli?")
+                                  condtype = "entry", condtext = "Čeho jste si všiml(a)?")
 
         self.question1.grid(row = 1, column = 1, sticky = "w")
         self.question2.grid(row = 2, column = 1, sticky = "w")

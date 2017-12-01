@@ -46,7 +46,7 @@ Nyní si můžete vzít své věci a přejít do vedlejší místnosti, kde Vám
 Tím Vaše účast na dnešní studii končí. Ještě jednou děkujeme!
 """
 
-winending = "V loterii jste byl(a) vylosován(a) a z vybraných produktů si tedy jako výhru tři odnesete. Z výrobků, které jste si vybral(a), byly tři náhodně vylosovány. Na papírek ležící na stole napište číslo Vašeho pracovního místa a níže uvedené kódy vyhraných produktů:\n{}\n{}\n{}\n\nPapírek si s sebou vezměte a předejte ho experimentátorovi."
+winending = "V loterii jste byl(a) vylosován(a) a z vybraných produktů si tedy jako výhru tři odnesete. Z výrobků, které jste si vybral(a), byly tři náhodně vylosovány. Na papírek ležící na stole napište číslo Vašeho pracovního místa a níže uvedené kódy vyhraných produktů:\n{}  {}  {}\nPro případ, že by tyto produkty nebyly v zásobách, si prosím zapište také tyto kódy náhradních produktů:\n{}  {}  {}\n\nPapírek si s sebou vezměte a předejte ho experimentátorovi."
 lostending = "V loterii jste nebyl(a) vylosován/a a bohužel si tedy domů vybrané produkty neodnesete. Dostanete však samozřejmě svou řádnou odměnu za účast v experimentu."
 
 
@@ -62,10 +62,10 @@ class Ending(InstructionsFrame):
         win = random.random() < 1/8
         if win and hasattr(root, "selected"):
             keys = [key for key in root.selected.keys()]
-            keys = random.sample(keys, 3)
+            keys = random.sample(keys, 6)
             prize = []
             for key in keys:
-                prize.append(key + "-" + random.choice(root.selected[key]))
+                prize.append(str(int(key) + (int(random.choice(root.selected[key])) - 1)*16))
             root.file.write("Won products\n" + "\n".join(prize))
             text = endingtext.format(winending.format(*prize))
         else:
