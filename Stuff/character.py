@@ -18,8 +18,13 @@ Následující úkol se týká usuzování o druhých lidech.
 Postupně Vám popíšeme osm lidí. U každého člověka Vám ukážeme čtyři výroky, které o něm řekli jeho blízcí. Následně vám popíšeme určitou situaci. Po vás budeme chtít, abyste na základě těchto informací zhodnotil(a) tohoto člověka a situaci, v níž se ocitl.
 """
 
+intro2 = """
+Nyní budete číst znovu informace o popsaných osmi lidech. Tentokrát nás však bude zajímat, jaký si myslíte, že má popsaný člověk postoj k ochraně životního prostředí.
+"""
 
 CharacterIntro =(InstructionsFrame, {"text": intro, "height": 6})
+CharacterIntro2 =(InstructionsFrame, {"text": intro2, "height": 6})
+
 
 ###########
 n_items = 8 
@@ -72,13 +77,13 @@ for i in range(n_items):
 
 answers = ["Velmi nemorální", "Celkem nemorální", "Spíše nemorální",
            "Spíše morální", "Celkem morální", "Velmi morální"]
+answers2 = ["Rozhodně nechrání", "Celkem nechrání", "Spíše nechrání",
+            "Spíše chrání", "Celkem chrání", "Rozhodně chrání"]
 
 
-class Character(ExperimentFrame):
+class CharacterCommon(ExperimentFrame):
     def __init__(self, root):
         super().__init__(root)
-
-        self.file.write("Character\n")
 
         self.nameVar = StringVar()
 
@@ -91,16 +96,6 @@ class Character(ExperimentFrame):
         self.text.grid(row = 1, column = 1, columnspan = 3)
         self.text.tag_configure("bold", font = "helvetica 14 bold")
         
-        self.q1 = "Jak je podle Vašeho názoru morální to, že "
-        self.measure1 = Measure(self, self.q1, answers, "", "",
-                                function = self.enable, questionPosition = "above")
-        self.measure1.grid(row = 2, column = 1, columnspan = 3, pady = 10)
-
-        self.q2 = "Jak je podle Vás AAA celkově morální nebo nemorální?"
-        self.measure2 = Measure(self, self.q2, answers, "", "",
-                                function = self.enable, questionPosition = "above")
-        self.measure2.grid(row = 3, column = 1, columnspan = 3)
-
         ttk.Style().configure("TButton", font = "helvetica 15")
         self.next = ttk.Button(self, text = "Pokračovat", command = self.answered, state = "disabled")
         self.next.grid(row = 4, column = 2)
@@ -117,8 +112,9 @@ class Character(ExperimentFrame):
         self.rowconfigure(5, weight = 1)
 
         self.order = -1
+        self.initializeQuestions()
         self.proceed()
-        
+                 
     def proceed(self):
         self.order += 1
         if self.order == n_items:
@@ -131,15 +127,26 @@ class Character(ExperimentFrame):
             self.text.tag_add("bold", i_index, i_index + "+12c")
             self.text["state"] = "disabled"
             self.nameVar.set(names[self.order])
-            self.measure1.answer.set("")
-            self.measure2.answer.set("")        
-            self.measure1.question["text"] = self.q1 + immoral_short[self.order].replace("AAA", names[self.order])
-            self.measure2.question["text"] = self.q2.replace("AAA", names[self.order])
+            self.newItem()
             self.t0 = perf_counter()
 
-    def enable(self):
-        if self.measure1.answer.get() and self.measure2.answer.get():
-            self.next["state"] = "!disabled"
+
+
+class Character(CharacterCommon):
+    def __init__(self, root):
+        super().__init__(root)
+        self.file.write("Character\n")
+
+    def initializeQuestions(self):
+        self.q1 = "Jak je podle Vašeho názoru morální to, že "
+        self.measure1 = Measure(self, self.q1, answers, "", "",
+                                function = self.enable, questionPosition = "above")
+        self.measure1.grid(row = 2, column = 1, columnspan = 3, pady = 10)
+
+        self.q2 = "Jak je podle Vás AAA celkově morální nebo nemorální?"
+        self.measure2 = Measure(self, self.q2, answers, "", "",
+                                function = self.enable, questionPosition = "above")
+        self.measure2.grid(row = 3, column = 1, columnspan = 3)
 
     def answered(self):
         self.file.write("\t".join([self.id, self.measure1.answer.get(),
@@ -147,10 +154,50 @@ class Character(ExperimentFrame):
                                    "\t".join(re.findall(r'"(.*?)"', texts[self.order])),
                                    str(perf_counter() - self.t0)]) + "\n")
         self.proceed()
+        
+    def enable(self):
+        if self.measure1.answer.get() and self.measure2.answer.get():
+            self.next["state"] = "!disabled"
+
+    def newItem(self):
+        self.measure1.answer.set("")
+        self.measure2.answer.set("")        
+        self.measure1.question["text"] = self.q1 + immoral_short[self.order].replace("AAA", names[self.order])
+        self.measure2.question["text"] = self.q2.replace("AAA", names[self.order])
+        
+
+
+class GreenEvaluation(CharacterCommon):
+    def __init__(self, root):
+        super().__init__(root)
+        self.file.write("Green evaluation\n")
+
+    def initializeQuestions(self):
+        self.q1 = "Zkuste prosím odhadnout s využitím následující škály, jaký postoj má AAA k ochraně životního prostředí."
+        self.measure1 = Measure(self, self.q1, answers2, "", "",
+                                function = self.enable, questionPosition = "above")
+        self.measure1.grid(row = 2, column = 1, columnspan = 3, pady = 10)
+
+    def answered(self):
+        self.file.write("\t".join([self.id, self.measure1.answer.get(), conditions[self.order],
+                                   "\t".join(re.findall(r'"(.*?)"', texts[self.order])),
+                                   str(perf_counter() - self.t0)]) + "\n")
+        self.proceed()        
+
+    def enable(self):
+        if self.measure1.answer.get():
+            self.next["state"] = "!disabled"
+
+    def newItem(self):
+        self.measure1.answer.set("")    
+        self.measure1.question["text"] = self.q1.replace("AAA", names[self.order])
 
 
 
 if __name__ == "__main__":
     os.chdir(os.path.dirname(os.getcwd()))
     GUI([CharacterIntro,
-         Character])
+         Character,
+         CharacterIntro2,
+         GreenEvaluation
+         ])

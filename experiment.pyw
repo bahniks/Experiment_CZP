@@ -17,7 +17,7 @@ from comments import Comments
 from demo import Demographics
 from validation import Validation
 from iat import Instructions, IAT, Introduction
-from character import CharacterIntro, Character
+from character import CharacterIntro, Character, CharacterIntro2, GreenEvaluation
 
 
 frames = [Intro,
@@ -44,6 +44,8 @@ frames = [Intro,
           IAT,
           CharacterIntro, # credentials/credits
           Character,
+          CharacterIntro2,
+          GreenEvaluation,
           MFQ1, # moral foundations questionnaire
           MFQ2,
           ProductsIntro, # choice of products
