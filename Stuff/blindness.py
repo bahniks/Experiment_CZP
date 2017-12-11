@@ -48,8 +48,8 @@ V jedné části experimentu jsme Vám ukazovali Vaše původní odpovědi na ot
 # SETTINGS #
 ############
 
-n_items = 46 # must be even!
-n_manipulated = 6 # must be even!
+n_items = 48 # must be even! 48
+n_manipulated = 6 # must be even! 6
 
 ##################################################################################################################
 
