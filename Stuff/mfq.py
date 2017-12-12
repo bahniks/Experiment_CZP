@@ -12,7 +12,7 @@ from gui import GUI
 
 class MFQ(ExperimentFrame):
     def __init__(self, root, words, question = "", labels = None, blocksize = 4, values = 7, text = True,
-                 filetext = ""):
+                 filetext = "", fontsize = 13):
         super().__init__(root)
         if filetext:
             self.file.write(filetext + "\n")
@@ -45,13 +45,13 @@ class MFQ(ExperimentFrame):
                                                         variable = self.variables[word])
                 self.buttons[word][i].grid(column = i, row = count + (count-1)//blocksize, padx = 15)
             self.labels[word] = ttk.Label(self.frame, text = word, background = "white",
-                                          font = "helvetica 13", justify = "left", width = maxwidth/1.2)
+                                          font = "helvetica {}".format(fontsize+1), justify = "left", width = maxwidth/1.2)
             self.labels[word].grid(column = 0, row = count + (count-1)//blocksize, padx = 15,
                                    sticky = W)
             if not count % blocksize:
                 self.frame.rowconfigure(count + count//blocksize, weight = 1)
                 
-        ttk.Label(self.frame, text = "s"*int(maxwidth/1.05), background = "white", font = "helvetica 13",
+        ttk.Label(self.frame, text = "s"*int(maxwidth/1.05), background = "white", font = "helvetica {}".format(fontsize+1),
                   foreground = "white", justify = "left", width = maxwidth/1.2).grid(
                       column = 0, padx = 15, sticky = W, row = count + 1 + (count-1)//blocksize) 
                                    
@@ -63,7 +63,7 @@ class MFQ(ExperimentFrame):
 
         for count, label in enumerate(labels):
             self.texts.append(ttk.Label(self.frame, text = labels[count], background = "white",
-                                        font = "helvetica 14", anchor = "center", justify = "center"))
+                                        font = "helvetica {}".format(fontsize), anchor = "center", justify = "center"))
             self.texts[count].grid(column = count+1, row = 0, sticky = W, pady = 4, padx = 3)
                       
         ttk.Style().configure("TRadiobutton", background = "white", font = "helvetica 12")
@@ -108,6 +108,7 @@ MFQ1 = (MFQ, {"words": "mfq1.txt",
                          "velmi\npodstatné", "obzvlášť\npodstatné"],
               "values": 6,
               "text": False,
+              "fontsize": 12,
               "filetext": "MFQ importance"})
 MFQ2 = (MFQ, {"words": "mfq2.txt",
               "question": "Přečtěte si prosím následující věty a označte svůj souhlas nebo nesouhlas:",
@@ -115,6 +116,7 @@ MFQ2 = (MFQ, {"words": "mfq2.txt",
                    "docela\nsouhlasím", "silně\nsouhlasím"],
               "values": 6,
               "text": False,
+              "fontsize": 10,
               "filetext": "MFQ attitude"})
 
 if __name__ == "__main__":

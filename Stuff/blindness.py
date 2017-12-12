@@ -41,7 +41,7 @@ beh_statement = "Uvedl(a) jste, že tuto aktivitu provádíte:"
 eval_statement = "Uvedl(a) jste, že tuto aktivitu hodnotíte:"
 
 blindnessQuestion = """
-V jedné části experimentu jsme Vám ukazovali Vaše původní odpovědi na otázku, jestli určitá chování hodnotíte jako dobrá nebo špatná, anebo jak často tato chování vykonáváte. Ve skutečnosti byly v 6 ze 46 těchto případů Vaše odpovědi posunuty o tři body opačným směrem. Tj. pokud jste například původně odpověděl(a) "Celkem špatné", zobrazilo se Vám "Spíše dobré" a pokud jste odpověděl(a) "Zřídka", zobrazilo se Vám "Často". Všiml(a) jste si této záměny?
+V jedné části experimentu jsme Vám ukazovali Vaše původní odpovědi na otázku, jestli určitá chování hodnotíte jako dobrá nebo špatná, anebo jak často tato chování vykonáváte. Ve skutečnosti byly v 6 ze 48 těchto případů Vaše odpovědi posunuty o tři body opačným směrem. Tj. pokud jste například původně odpověděl(a) "Celkem špatné", zobrazilo se Vám "Spíše dobré" a pokud jste odpověděl(a) "Zřídka", zobrazilo se Vám "Často". Všiml(a) jste si této záměny?
 """ 
 
 ##################################################################################################################

@@ -26,7 +26,6 @@ frames = [Intro,
           ChoiceBlindness1,
           ChoiceBlindnessInstructions2,
           ChoiceBlindness2,
-          ChoiceBlindnessInstructions3,
           Introduction, # IAT
           Instructions,
           IAT,
@@ -50,7 +49,8 @@ frames = [Intro,
           MFQ2,
           ProductsIntro, # choice of products
           Choices, 
-          DebriefingOne, # debriefing for choice blindness
+          ChoiceBlindnessInstructions3, # debriefing for choice blindness
+          DebriefingOne,
           DebriefingTwo,
           Demographics,
           Comments,
