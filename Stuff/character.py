@@ -15,8 +15,9 @@ from common import read_all
 
 intro = """
 Následující úkol se týká usuzování o druhých lidech.
-Postupně Vám popíšeme osm lidí. U každého člověka Vám ukážeme čtyři výroky, které o něm řekli jeho blízcí. Následně vám popíšeme určitou situaci. Po vás budeme chtít, abyste na základě těchto informací zhodnotil(a) tohoto člověka a situaci, v níž se ocitl.
+Postupně Vám popíšeme osm lidí. U každého člověka Vám ukážeme čtyři výroky, které o něm řekli jeho blízcí. Jedná se o výroky týkající se jeho aktivit, zvyků, ale i obyčejných zážitků a všedních činností. Následně vám popíšeme určitou situaci. Po vás budeme chtít, abyste na základě těchto informací zhodnotil(a) tohoto člověka a situaci, v níž se ocitl.
 """
+
 
 intro2 = """
 Nyní budete číst znovu informace o popsaných osmi lidech. Tentokrát nás však bude zajímat, jaký si myslíte, že má popsaný člověk postoj k ochraně životního prostředí.
@@ -77,8 +78,8 @@ for i in range(n_items):
 
 answers = ["Velmi nemorální", "Celkem nemorální", "Spíše nemorální",
            "Spíše morální", "Celkem morální", "Velmi morální"]
-answers2 = ["Rozhodně nechrání", "Celkem nechrání", "Spíše nechrání",
-            "Spíše chrání", "Celkem chrání", "Rozhodně chrání"]
+answers2 = ["Silně negativní", "Středně negativní", "Spíše negativní",
+            "Spíše pozitivní", "Středně pozitivní", "Silně pozitivní"]
 
 
 class CharacterCommon(ExperimentFrame):
