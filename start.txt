@@ -1,9 +1,9 @@
 0
 
-environmentalni postoje (choice blindness) 3
-IAT auta/MHD 7
-hodnoceni moralky osob 22
-MFQ - dulezitost aspektu moralky 26
-vyber produktu 28
-debriefing pro choice blindness 30
-demograficke udaje 33
+environmentalni postoje (choice blindness) 2
+IAT auta/MHD 6
+hodnoceni moralky osob 21
+MFQ - dulezitost aspektu moralky 25
+vyber produktu 27
+debriefing pro choice blindness 29
+demograficke udaje 32
