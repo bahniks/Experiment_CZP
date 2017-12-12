@@ -92,7 +92,7 @@ class CharacterCommon(ExperimentFrame):
         self.name.grid(row = 0, column = 2, pady = 15, sticky = S)
         
         self.text = Text(self, font = "helvetica 14", relief = "flat", background = "white",
-                         width = 80, height = 17, pady = 7, wrap = "word")
+                         width = 80, height = 20, pady = 7, wrap = "word")
         self.text.grid(row = 1, column = 1, columnspan = 3)
         self.text.tag_configure("bold", font = "helvetica 14 bold")
         

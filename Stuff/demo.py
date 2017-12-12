@@ -20,6 +20,8 @@ class Demographics(ExperimentFrame):
         self.field = StringVar()
         self.field.set("Nestuduji VŠ")
         self.education = StringVar()
+        self.car = StringVar()
+        self.ticket = StringVar()        
 
         self.lab1 = ttk.Label(self, text = "Pohlaví:", background = "white",
                               font = "helvetica 15")
@@ -42,6 +44,12 @@ class Demographics(ExperimentFrame):
         self.lab7 = ttk.Label(self, text = "Jaké je vaše nejvyšší dosažené vzdělání? ", background = "white",
                               font = "helvetica 15")
         self.lab7.grid(column = 1, row = 7, pady = 2, sticky = W, padx = 2)
+        self.lab8 = ttk.Label(self, text = "Vlastníte automobil? ", background = "white",
+                              font = "helvetica 15")
+        self.lab8.grid(column = 1, row = 8, pady = 2, sticky = W, padx = 2)
+        self.lab9 = ttk.Label(self, text = "Vlastníte časovou jízdenku na MHD (lítačka apod.)? ", background = "white",
+                              font = "helvetica 15")
+        self.lab9.grid(column = 1, row = 9, pady = 2, sticky = W, padx = 2)
         
         self.male = ttk.Radiobutton(self, text = "muž", variable = self.sex, value = "male",
                                     command = self.checkAllFilled)
@@ -64,6 +72,16 @@ class Demographics(ExperimentFrame):
                                      value = "student", command = self.checkAllFilled)
         self.no = ttk.Radiobutton(self, text = "ne", variable = self.student,
                                     value = "nostudent", command = self.checkAllFilled)
+
+        self.yes2 = ttk.Radiobutton(self, text = "ano", variable = self.car,
+                                     value = "car", command = self.checkAllFilled)
+        self.no2 = ttk.Radiobutton(self, text = "ne", variable = self.car,
+                                    value = "no_car", command = self.checkAllFilled)
+
+        self.yes3 = ttk.Radiobutton(self, text = "ano", variable = self.ticket,
+                                     value = "ticket", command = self.checkAllFilled)
+        self.no3 = ttk.Radiobutton(self, text = "ne", variable = self.ticket,
+                                    value = "no_ticket", command = self.checkAllFilled)
 
         ttk.Style().configure("TRadiobutton", background = "white", font = "helvetica 15")
         ttk.Style().configure("TButton", font = "helvetica 15")
@@ -108,21 +126,25 @@ class Demographics(ExperimentFrame):
         self.right.grid(column = 3, row = 4, pady = 7, padx = 7, sticky = W)
         self.yes.grid(column = 2, row = 5, pady = 7, padx = 7, sticky = W)
         self.no.grid(column = 3, row = 5, pady = 7, padx = 7, sticky = W)
+        self.yes2.grid(column = 2, row = 8, pady = 7, padx = 7, sticky = W)
+        self.no2.grid(column = 3, row = 8, pady = 7, padx = 7, sticky = W)
+        self.yes3.grid(column = 2, row = 9, pady = 7, padx = 7, sticky = W)
+        self.no3.grid(column = 3, row = 9, pady = 7, padx = 7, sticky = W)        
         self.fieldCB.grid(column = 2, columnspan = 2, row = 6, pady = 7, padx = 7, sticky = W)
         self.educationCB.grid(column = 2, columnspan = 3, row = 7, pady = 7, padx = 7, sticky = W)
 
         self.columnconfigure(5, weight = 1)
         self.columnconfigure(0, weight = 1)
         self.rowconfigure(0, weight = 1)
-        self.rowconfigure(9, weight = 1)
+        self.rowconfigure(11, weight = 1)
 
         self.next = ttk.Button(self, text = "Pokračovat", command = self.nextFun,
                                state = "disabled")
-        self.next.grid(row = 8, column = 2, pady = 15)
+        self.next.grid(row = 11, column = 1, pady = 15, columnspan = 3)
 
 
     def checkAllFilled(self, _ = None):
-        if all([v.get() for v in [self.language, self.age, self.sex,
+        if all([v.get() for v in [self.language, self.age, self.sex, self.car, self.ticket,
                                   self.hand, self.field, self.student, self.education]]):
             self.next["state"] = "!disabled"
 
@@ -130,7 +152,7 @@ class Demographics(ExperimentFrame):
         self.file.write("Demographics\n")
         self.file.write("\t".join([self.id, self.sex.get(), self.age.get(), self.language.get(),
                                    self.hand.get(), self.student.get(), self.field.get(),
-                                   self.education.get()]) + "\n")
+                                   self.education.get(), self.car.get(), self.ticket.get()]) + "\n")
 
 
 if __name__ == "__main__":
